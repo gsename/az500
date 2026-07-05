@@ -1,0 +1,656 @@
+[
+  {
+    "id": "q-o2-1-01",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "In a Network Security Group, how are rules evaluated?",
+    "choices": ["By priority, lowest number first; the first match wins", "By priority, highest number first", "Alphabetically by rule name", "Randomly for load distribution"],
+    "correctAnswers": ["By priority, lowest number first; the first match wins"],
+    "explanation": "NSG rules are processed in priority order starting from the lowest number; the first matching rule stops evaluation.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-1-02",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "For traffic to successfully reach a VM's network interface, it must be allowed by which NSG(s)?",
+    "choices": ["Only the subnet NSG", "Only the NIC NSG", "Both the subnet NSG and the NIC NSG", "NSGs never apply to individual VMs"],
+    "correctAnswers": ["Both the subnet NSG and the NIC NSG"],
+    "explanation": "Traffic must be permitted by both the subnet-level NSG and the NIC-level NSG — a deny at either layer blocks it.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-1-03",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "What is the purpose of an Application Security Group (ASG)?",
+    "choices": [
+      "To group VMs by application role so NSG rules can target the group instead of individual IP addresses",
+      "To replace NSGs entirely",
+      "To encrypt traffic between VMs",
+      "To load-balance traffic across VMs"
+    ],
+    "correctAnswers": ["To group VMs by application role so NSG rules can target the group instead of individual IP addresses"],
+    "explanation": "ASGs let NSG rules reference a logical group (e.g. 'web', 'db') instead of brittle, hard-coded IP lists.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-1-04",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "What is the correct workflow for managing networks at scale with Azure Virtual Network Manager (AVNM)?",
+    "choices": ["Group, configure, deploy", "Deploy, group, configure", "Configure, deploy, audit", "Peer, route, filter"],
+    "correctAnswers": ["Group, configure, deploy"],
+    "explanation": "AVNM groups VNets into network groups, applies connectivity/security configurations, then deploys those configurations across the group.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-05",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "What does an Azure Virtual Network Manager connectivity configuration create?",
+    "choices": [
+      "A mesh or hub-and-spoke topology among the VNets in a network group",
+      "A set of NSG rules for a single VNet",
+      "A private endpoint for a PaaS service",
+      "A WAF policy"
+    ],
+    "correctAnswers": ["A mesh or hub-and-spoke topology among the VNets in a network group"],
+    "explanation": "Connectivity configurations define regional or global mesh topologies, or hub-and-spoke topologies, across the VNets in a network group.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-06",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "When both an Azure Virtual Network Manager security admin rule and a conflicting NSG rule apply to the same traffic, which one is evaluated first and can override the other?",
+    "choices": ["The NSG rule always wins", "The security admin rule is evaluated first and can block traffic even if the NSG would allow it", "They are merged and the least restrictive rule applies", "Whichever rule was created most recently"],
+    "correctAnswers": ["The security admin rule is evaluated first and can block traffic even if the NSG would allow it"],
+    "explanation": "AVNM security admin rules take priority over NSG rules and are evaluated before them.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o2-1-07",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "What is the primary purpose of a user-defined route (UDR)?",
+    "choices": [
+      "To override Azure's default system routes, e.g. to force traffic through a network virtual appliance or Azure Firewall",
+      "To filter traffic by port and protocol",
+      "To encrypt traffic between two VNets",
+      "To assign a public IP address to a VM"
+    ],
+    "correctAnswers": ["To override Azure's default system routes, e.g. to force traffic through a network virtual appliance or Azure Firewall"],
+    "explanation": "UDRs override default routing behavior, most commonly to implement a 'forced tunnel' through a firewall or appliance.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-1-08",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "To force all outbound traffic from a subnet through Azure Firewall, which UDR configuration is correct?",
+    "choices": [
+      "Destination 0.0.0.0/0, next hop type Virtual appliance, next-hop address = the firewall's private IP",
+      "Destination 10.0.0.0/8, next hop type Internet",
+      "Destination 0.0.0.0/0, next hop type Virtual network gateway",
+      "No UDR is needed; NSGs alone can force this"
+    ],
+    "correctAnswers": ["Destination 0.0.0.0/0, next hop type Virtual appliance, next-hop address = the firewall's private IP"],
+    "explanation": "A default-route (0.0.0.0/0) UDR pointing to the firewall's private IP as a virtual appliance forces all egress through it for inspection.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-09",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "What is the key difference between VNet peering and a VPN Gateway connection?",
+    "choices": [
+      "Peering privately connects VNets over the Azure backbone; VPN Gateway connects networks over encrypted IPsec tunnels",
+      "Peering always requires encryption; VPN Gateway never does",
+      "VPN Gateway is used only between VNets in the same region",
+      "There is no functional difference"
+    ],
+    "correctAnswers": ["Peering privately connects VNets over the Azure backbone; VPN Gateway connects networks over encrypted IPsec tunnels"],
+    "explanation": "VNet peering is a backbone-level private connection between VNets; VPN Gateway establishes encrypted IPsec tunnels, typically to on-premises or remote networks.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-10",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "Which VPN connection type is used to connect an entire on-premises network to Azure?",
+    "choices": ["Site-to-site (S2S)", "Point-to-site (P2S)", "VNet peering", "A private endpoint"],
+    "correctAnswers": ["Site-to-site (S2S)"],
+    "explanation": "Site-to-site connects whole networks; point-to-site connects individual client devices.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-1-11",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "What does a 'secured virtual hub' add to an Azure Virtual WAN deployment?",
+    "choices": ["Azure Firewall and other security services directly into the hub", "A second, redundant hub in the same region", "Automatic DDoS Protection Standard upgrade", "A dedicated ExpressRoute circuit"],
+    "correctAnswers": ["Azure Firewall and other security services directly into the hub"],
+    "explanation": "A secured virtual hub integrates Azure Firewall (and other security services) directly into the Virtual WAN hub.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-12",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "ExpressRoute provides a private, non-internet connection to Azure. What can be added on top of it for confidentiality?",
+    "choices": ["IPsec or MACsec encryption", "A Web Application Firewall", "Dynamic data masking", "Azure Bastion"],
+    "correctAnswers": ["IPsec or MACsec encryption"],
+    "explanation": "ExpressRoute traffic is private by default but not encrypted; IPsec or MACsec can be layered on top for confidentiality.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-13",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "As of mid-2026, what is the status of NSG flow logs?",
+    "choices": [
+      "New NSG flow logs can no longer be created (since June 2025) and the feature fully retires in September 2027; Microsoft recommends migrating to Virtual Network (VNet) flow logs",
+      "NSG flow logs were replaced immediately in 2024 with no migration path",
+      "NSG flow logs are being expanded with new capabilities and remain the primary recommendation",
+      "NSG flow logs only ever applied to Azure Firewall, not NSGs"
+    ],
+    "correctAnswers": ["New NSG flow logs can no longer be created (since June 2025) and the feature fully retires in September 2027; Microsoft recommends migrating to Virtual Network (VNet) flow logs"],
+    "explanation": "Microsoft Learn documents NSG flow log creation as blocked since 30 June 2025, with full retirement on 30 September 2027, in favor of VNet flow logs.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o2-1-14",
+    "objectiveId": "o2-1",
+    "type": "multiple",
+    "prompt": "Which two are diagnostic capabilities provided by Azure Network Watcher? (Choose two.)",
+    "choices": ["IP flow verify", "Next hop", "Secure Score calculation", "Azure Policy compliance evaluation"],
+    "correctAnswers": ["IP flow verify", "Next hop"],
+    "explanation": "Network Watcher provides IP flow verify, next hop, connection troubleshoot, and flow logs — Secure Score and Policy compliance belong to Defender for Cloud and Azure Policy respectively.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-15",
+    "objectiveId": "o2-1",
+    "type": "multiple",
+    "prompt": "Which two statements about a storage account's built-in (resource-level) firewall are correct? (Choose two.)",
+    "choices": [
+      "It filters traffic at the PaaS control-plane level, separate from NSGs and Azure Firewall",
+      "It requires deploying a separate Azure Firewall appliance to function",
+      "It can restrict access to specific VNet subnets via service endpoints",
+      "It is the same feature as a Web Application Firewall"
+    ],
+    "correctAnswers": [
+      "It filters traffic at the PaaS control-plane level, separate from NSGs and Azure Firewall",
+      "It can restrict access to specific VNet subnets via service endpoints"
+    ],
+    "explanation": "Resource-level firewalls (Storage, SQL, Key Vault, App Service) are a distinct control layer from NSGs and Azure Firewall, typically configured with allowed IP ranges or VNet subnets via service endpoints.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-16",
+    "objectiveId": "o2-1",
+    "type": "case-study",
+    "caseStudyId": "cs-fabrikam-network",
+    "prompt": "Referring to requirement 1 (egress from the workloads subnet inspected by a centrally managed, reusable firewall policy across regional secured hubs): which combination satisfies this?",
+    "choices": [
+      "A UDR forcing 0.0.0.0/0 to Azure Firewall deployed in a secured virtual hub, with the firewall policy centrally managed via Azure Firewall Manager",
+      "An NSG on the workloads subnet with a deny-all outbound rule",
+      "A private endpoint attached to the workloads subnet",
+      "Azure DDoS Protection enabled on the subnet"
+    ],
+    "correctAnswers": ["A UDR forcing 0.0.0.0/0 to Azure Firewall deployed in a secured virtual hub, with the firewall policy centrally managed via Azure Firewall Manager"],
+    "explanation": "Forcing egress through a firewall requires a UDR; deploying that firewall in a secured virtual hub and managing its policy through Firewall Manager makes the policy centrally reusable across multiple hubs.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-17",
+    "objectiveId": "o2-1",
+    "type": "case-study",
+    "caseStudyId": "cs-fabrikam-network",
+    "prompt": "Referring to requirement 2 (block a malicious IP range tenant-wide, across every VNet, without editing each NSG individually): which feature satisfies this?",
+    "choices": [
+      "Manually adding a deny rule to every NSG in every VNet",
+      "A security admin configuration in Azure Virtual Network Manager, applied to a network group spanning all the VNets",
+      "A UDR pointing the malicious range to a black-hole next hop on each VNet",
+      "An Azure Policy Deny effect on NSG resources"
+    ],
+    "correctAnswers": ["A security admin configuration in Azure Virtual Network Manager, applied to a network group spanning all the VNets"],
+    "explanation": "AVNM's security admin rules are applied once, at the network-group level, and are enforced across every VNet in that group ahead of individual NSG evaluation — exactly the centralized, no-per-NSG-edit outcome required.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-01",
+    "objectiveId": "o2-2",
+    "type": "single",
+    "prompt": "What happens to a PaaS service's public IP address when you configure a service endpoint for it?",
+    "choices": [
+      "The service keeps its public IP but access can be restricted to selected VNet subnets",
+      "The public IP is removed and replaced with a private IP",
+      "A new public IP is generated for each subnet",
+      "The service becomes reachable only via a VPN Gateway"
+    ],
+    "correctAnswers": ["The service keeps its public IP but access can be restricted to selected VNet subnets"],
+    "explanation": "A service endpoint extends your VNet's identity to the service over the Azure backbone; the service itself still has a public IP, just restricted to allowed subnets.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-2-02",
+    "objectiveId": "o2-2",
+    "type": "single",
+    "prompt": "What does a private endpoint give a PaaS service?",
+    "choices": [
+      "A private IP address inside your VNet, with no public exposure",
+      "A faster public IP address",
+      "A load-balanced set of public IPs",
+      "Nothing — it only changes DNS records"
+    ],
+    "correctAnswers": ["A private IP address inside your VNet, with no public exposure"],
+    "explanation": "A private endpoint, powered by Azure Private Link, assigns the service a private IP via a NIC inside your VNet.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-2-03",
+    "objectiveId": "o2-2",
+    "type": "single",
+    "prompt": "Why must you integrate a Private DNS zone when configuring a private endpoint?",
+    "choices": [
+      "So the service's standard name resolves to its new private IP address instead of its public IP",
+      "It is optional and has no functional effect",
+      "To enable TLS certificate issuance",
+      "To register the VNet with Azure AD"
+    ],
+    "correctAnswers": ["So the service's standard name resolves to its new private IP address instead of its public IP"],
+    "explanation": "Without Private DNS zone integration, clients resolving the service's normal hostname would still get the public IP, defeating the purpose of the private endpoint.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-04",
+    "objectiveId": "o2-2",
+    "type": "single",
+    "prompt": "What does an Azure Private Link *service* let you do?",
+    "choices": [
+      "Expose your own service, sitting behind a Standard Load Balancer, privately to consumers via a private endpoint on their side",
+      "Consume a Microsoft PaaS service privately",
+      "Create a public-facing CDN endpoint",
+      "Replace the need for any load balancer"
+    ],
+    "correctAnswers": ["Expose your own service, sitting behind a Standard Load Balancer, privately to consumers via a private endpoint on their side"],
+    "explanation": "A Private Link service is the mirror image of a private endpoint: instead of consuming someone else's service privately, you publish your own service for others to consume privately.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-05",
+    "objectiveId": "o2-2",
+    "type": "single",
+    "prompt": "After adding a private endpoint to a storage account, which setting should you change to ensure the account can no longer be reached over the public internet?",
+    "choices": ["Set Public network access to Disabled", "Enable soft delete", "Enable versioning", "Rotate the account access keys"],
+    "correctAnswers": ["Set Public network access to Disabled"],
+    "explanation": "Adding a private endpoint doesn't automatically remove public access — Public network access must be explicitly set to Disabled.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-06",
+    "objectiveId": "o2-2",
+    "type": "single",
+    "prompt": "What does VNet integration allow an App Service or Function app to do?",
+    "choices": ["Make outbound calls into a VNet", "Accept inbound calls only from a VNet", "Encrypt data at rest", "Replace the need for a private endpoint entirely"],
+    "correctAnswers": ["Make outbound calls into a VNet"],
+    "explanation": "VNet integration handles outbound connectivity from the app into a VNet; it does not by itself secure inbound access.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-2-07",
+    "objectiveId": "o2-2",
+    "type": "single",
+    "prompt": "Which statement is true about VNet integration and inbound access to an App Service?",
+    "choices": [
+      "VNet integration does not secure inbound access — a private endpoint or access restrictions are needed for that",
+      "VNet integration automatically blocks all public inbound traffic",
+      "VNet integration and inbound access are the same feature",
+      "VNet integration is only relevant for Azure Functions, not App Service"
+    ],
+    "correctAnswers": ["VNet integration does not secure inbound access — a private endpoint or access restrictions are needed for that"],
+    "explanation": "VNet integration solves outbound connectivity only; inbound protection requires a separate mechanism such as a private endpoint or access restrictions.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-08",
+    "objectiveId": "o2-2",
+    "type": "single",
+    "prompt": "What is an App Service Environment (ASE)?",
+    "choices": [
+      "A fully isolated, single-tenant App Service deployment running inside your own VNet",
+      "A shared multi-tenant App Service plan with a private endpoint",
+      "A monitoring dashboard for App Service",
+      "A CDN edge location for App Service content"
+    ],
+    "correctAnswers": ["A fully isolated, single-tenant App Service deployment running inside your own VNet"],
+    "explanation": "An ASE provides the strongest isolation level for App Service, at higher cost and management overhead than the multi-tenant service.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-2-09",
+    "objectiveId": "o2-2",
+    "type": "single",
+    "prompt": "Compared to multi-tenant App Service with VNet integration and a private endpoint, when would you choose an ASE instead?",
+    "choices": [
+      "When a regulatory or isolation requirement demands a fully single-tenant deployment, accepting the higher cost/management overhead",
+      "When you want the lowest possible cost and management overhead",
+      "When no network isolation is required at all",
+      "ASE and multi-tenant App Service are functionally identical, so it never matters"
+    ],
+    "correctAnswers": ["When a regulatory or isolation requirement demands a fully single-tenant deployment, accepting the higher cost/management overhead"],
+    "explanation": "ASE is the strongest isolation option but comes at a real cost/management trade-off compared to multi-tenant App Service plus VNet integration/private endpoint.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-10",
+    "objectiveId": "o2-2",
+    "type": "single",
+    "prompt": "How is Azure SQL Managed Instance deployed at the network level?",
+    "choices": [
+      "Always into a delegated subnet that you secure directly with NSGs and route tables",
+      "Always with a public endpoint and no network controls",
+      "Only inside an App Service Environment",
+      "Only accessible via Azure Bastion"
+    ],
+    "correctAnswers": ["Always into a delegated subnet that you secure directly with NSGs and route tables"],
+    "explanation": "SQL Managed Instance is never deployed into a shared multi-tenant network — it always lives in a delegated subnet you control.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-2-11",
+    "objectiveId": "o2-2",
+    "type": "single",
+    "prompt": "Which of the following, service endpoint or private endpoint, keeps the underlying PaaS service's public IP address?",
+    "choices": ["Service endpoint", "Private endpoint", "Both remove the public IP", "Neither uses IP addressing"],
+    "correctAnswers": ["Service endpoint"],
+    "explanation": "Service endpoints restrict access to a public IP by source subnet; only a private endpoint assigns a private IP and removes public exposure.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-2-12",
+    "objectiveId": "o2-2",
+    "type": "single",
+    "prompt": "A PaaS service must be reachable from an on-premises network over a VPN and from multiple peered VNets, with absolutely no public internet exposure. Which feature achieves this?",
+    "choices": ["A private endpoint", "A service endpoint", "A shared access signature", "An NSG rule allowing the on-premises IP range"],
+    "correctAnswers": ["A private endpoint"],
+    "explanation": "Only a private endpoint eliminates public exposure entirely while remaining reachable across peered VNets and on-premises connections.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-13",
+    "objectiveId": "o2-2",
+    "type": "multiple",
+    "prompt": "Which two statements about service endpoints are correct? (Choose two.)",
+    "choices": [
+      "The PaaS service keeps a public IP address",
+      "The PaaS service is assigned a private IP address inside the VNet",
+      "Traffic stays on the Azure backbone network",
+      "A Private DNS zone is required for a service endpoint to function"
+    ],
+    "correctAnswers": ["The PaaS service keeps a public IP address", "Traffic stays on the Azure backbone network"],
+    "explanation": "Service endpoints keep the service's public IP (restricted by subnet) while routing traffic over the Azure backbone; they do not assign a private IP or require Private DNS zone integration.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-14",
+    "objectiveId": "o2-2",
+    "type": "multiple",
+    "prompt": "Which two scenarios justify choosing an App Service Environment (ASE) over multi-tenant App Service with VNet integration and a private endpoint? (Choose two.)",
+    "choices": [
+      "A regulatory requirement for full single-tenant isolation",
+      "A goal of minimizing management overhead and cost",
+      "A need for a dedicated, fully isolated App Service deployment",
+      "A simple public website with no special isolation requirement"
+    ],
+    "correctAnswers": ["A regulatory requirement for full single-tenant isolation", "A need for a dedicated, fully isolated App Service deployment"],
+    "explanation": "ASE is justified when full single-tenant isolation is a hard requirement — not when minimizing cost/overhead or when no special isolation is needed, since multi-tenant App Service is cheaper and simpler in those cases.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-15",
+    "objectiveId": "o2-2",
+    "type": "case-study",
+    "caseStudyId": "cs-fabrikam-network",
+    "prompt": "Referring to requirement 3 (a storage account holding sensitive backups reachable only from an on-premises network over ExpressRoute, zero public exposure): which configuration satisfies this?",
+    "choices": [
+      "A private endpoint on the storage account, with Public network access disabled, reachable over ExpressRoute private peering",
+      "A service endpoint restricting access to the on-premises IP range",
+      "An SAS token distributed to the on-premises application",
+      "Enabling the storage account's firewall to allow the on-premises public IP"
+    ],
+    "correctAnswers": ["A private endpoint on the storage account, with Public network access disabled, reachable over ExpressRoute private peering"],
+    "explanation": "Only a private endpoint with public access disabled removes all public exposure while remaining reachable from an ExpressRoute-connected on-premises network.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-16",
+    "objectiveId": "o2-2",
+    "type": "case-study",
+    "caseStudyId": "cs-fabrikam-network",
+    "prompt": "Referring to requirement 4 (App Service must make outbound calls to an on-premises SQL Server over a site-to-site VPN, while keeping its default public inbound endpoint unchanged): what should be configured?",
+    "choices": [
+      "VNet integration on the App Service, connected to the VPN-linked VNet, leaving the app's public inbound endpoint as-is",
+      "A private endpoint on the App Service",
+      "An App Service Environment",
+      "A service endpoint on the App Service"
+    ],
+    "correctAnswers": ["VNet integration on the App Service, connected to the VPN-linked VNet, leaving the app's public inbound endpoint as-is"],
+    "explanation": "VNet integration is specifically the outbound-only mechanism — it lets the app reach the VPN-connected on-premises SQL Server without touching the app's public inbound endpoint.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-3-01",
+    "objectiveId": "o2-3",
+    "type": "single",
+    "prompt": "Which Azure service is a REGIONAL layer-7 (HTTP/S) load balancer?",
+    "choices": ["Azure Application Gateway", "Azure Front Door", "Azure Bastion", "Azure Virtual WAN"],
+    "correctAnswers": ["Azure Application Gateway"],
+    "explanation": "Application Gateway operates at the regional level; Front Door is the global equivalent.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-3-02",
+    "objectiveId": "o2-3",
+    "type": "single",
+    "prompt": "Which Azure service is a GLOBAL layer-7 entry point that includes CDN and acceleration capabilities?",
+    "choices": ["Azure Front Door", "Azure Application Gateway", "Network Watcher", "Azure Firewall"],
+    "correctAnswers": ["Azure Front Door"],
+    "explanation": "Front Door is the global edge entry point with CDN, acceleration, and failover; Application Gateway is regional.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-3-03",
+    "objectiveId": "o2-3",
+    "type": "single",
+    "prompt": "How is a Web Application Firewall (WAF) best described?",
+    "choices": [
+      "A feature attached to Application Gateway or Front Door to block OWASP web attacks",
+      "A standalone network appliance unrelated to any gateway",
+      "A replacement for Azure Firewall",
+      "A DNS security feature"
+    ],
+    "correctAnswers": ["A feature attached to Application Gateway or Front Door to block OWASP web attacks"],
+    "explanation": "WAF is not a standalone service — it's a policy you attach to either Application Gateway or Front Door.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-3-04",
+    "objectiveId": "o2-3",
+    "type": "single",
+    "prompt": "At which network layers does Azure Firewall operate, and what does it filter?",
+    "choices": [
+      "Layers 3-7, filtering general VNet network traffic",
+      "Layer 7 only, filtering web-application-specific attacks",
+      "Layer 2 only, filtering MAC addresses",
+      "It does not filter traffic, only logs it"
+    ],
+    "correctAnswers": ["Layers 3-7, filtering general VNet network traffic"],
+    "explanation": "Azure Firewall is a general-purpose network firewall spanning layers 3-7, distinct from a WAF's web-app-specific scope.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-3-05",
+    "objectiveId": "o2-3",
+    "type": "single",
+    "prompt": "What is the key difference between Azure Firewall and a Web Application Firewall (WAF)?",
+    "choices": [
+      "Azure Firewall filters general VNet network traffic; WAF specifically blocks web-application attacks like SQL injection and XSS",
+      "They are two names for the same product",
+      "WAF operates at layer 3; Azure Firewall operates at layer 7 only",
+      "Azure Firewall can only be used with Front Door"
+    ],
+    "correctAnswers": ["Azure Firewall filters general VNet network traffic; WAF specifically blocks web-application attacks like SQL injection and XSS"],
+    "explanation": "This is one of the most commonly tested distinctions in this objective.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-3-06",
+    "objectiveId": "o2-3",
+    "type": "single",
+    "prompt": "What does Azure Firewall Manager provide?",
+    "choices": [
+      "Centralized management of multiple Azure Firewalls and their reusable firewall policies across VNets and secured hubs",
+      "A dashboard for Secure Score",
+      "A single Azure Firewall instance with no policy reuse",
+      "Vulnerability scanning for firewalls"
+    ],
+    "correctAnswers": ["Centralized management of multiple Azure Firewalls and their reusable firewall policies across VNets and secured hubs"],
+    "explanation": "Firewall Manager centralizes firewall and policy management at scale.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-3-07",
+    "objectiveId": "o2-3",
+    "type": "single",
+    "prompt": "Which WAF mode actively blocks malicious requests, as opposed to only logging them?",
+    "choices": ["Prevention", "Detection", "Monitor-only", "Passive"],
+    "correctAnswers": ["Prevention"],
+    "explanation": "Prevention mode actively blocks matching requests; Detection mode only logs them.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-3-08",
+    "objectiveId": "o2-3",
+    "type": "single",
+    "prompt": "Which managed rule set is commonly used to configure baseline WAF protections?",
+    "choices": ["The OWASP Core Rule Set", "The NIST 800-53 rule set", "The PCI-DSS rule set", "The CIS Benchmark rule set"],
+    "correctAnswers": ["The OWASP Core Rule Set"],
+    "explanation": "The OWASP Core Rule Set is the standard managed rule set used for baseline WAF protection against common web attacks.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-3-09",
+    "objectiveId": "o2-3",
+    "type": "single",
+    "prompt": "Which two Azure DDoS Protection tiers exist as of 2026, and how do they differ?",
+    "choices": [
+      "DDoS Network Protection (full-featured, formerly 'Standard') and DDoS IP Protection (a cheaper, pay-per-protected-IP tier with the same mitigation engine but fewer value-added services)",
+      "DDoS Basic and DDoS Premium, differing only in mitigation speed",
+      "DDoS Protection Standard is the only tier; no other tier exists",
+      "DDoS Protection is a feature of the Web Application Firewall, not a separate service"
+    ],
+    "correctAnswers": ["DDoS Network Protection (full-featured, formerly 'Standard') and DDoS IP Protection (a cheaper, pay-per-protected-IP tier with the same mitigation engine but fewer value-added services)"],
+    "explanation": "Both tiers share the same core mitigation engine; Network Protection adds rapid response support, cost protection, and WAF discounts that IP Protection does not include.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o2-3-10",
+    "objectiveId": "o2-3",
+    "type": "single",
+    "prompt": "Older material and some official skill descriptions still refer to 'DDoS Protection Standard'. What does this name correspond to in the current Azure portal?",
+    "choices": ["DDoS Network Protection", "DDoS IP Protection", "DDoS Basic", "Azure Firewall Premium"],
+    "correctAnswers": ["DDoS Network Protection"],
+    "explanation": "'DDoS Protection Standard' is the older branding for what the portal now calls 'DDoS Network Protection' — the full-featured tier including rapid response, cost protection, and WAF discounts.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o2-3-11",
+    "objectiveId": "o2-3",
+    "type": "single",
+    "prompt": "Where do you enforce a minimum TLS version for an App Service or API Management instance?",
+    "choices": ["In the service's TLS/SSL settings", "In the NSG rules for its subnet", "In Azure Firewall's application rules", "In Azure Policy only, with no service-level setting"],
+    "correctAnswers": ["In the service's TLS/SSL settings"],
+    "explanation": "TLS certificate binding and minimum TLS version are configured directly on the service (App Service, API Management).",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o2-3-12",
+    "objectiveId": "o2-3",
+    "type": "single",
+    "prompt": "A public API needs global reach, low latency for users on multiple continents, a CDN, and protection against OWASP attacks. Which combination fits best?",
+    "choices": ["Azure Front Door with a WAF policy attached", "Azure Application Gateway alone", "Azure Bastion with NSGs", "A private endpoint with a service endpoint"],
+    "correctAnswers": ["Azure Front Door with a WAF policy attached"],
+    "explanation": "Front Door provides the global, CDN-backed entry point; attaching a WAF adds the OWASP protection.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-3-13",
+    "objectiveId": "o2-3",
+    "type": "single",
+    "prompt": "A regional web app needs a layer-7 load balancer with path-based routing and a WAF, but does not need global CDN distribution. Which service fits best?",
+    "choices": ["Azure Application Gateway with a WAF policy", "Azure Front Door", "Azure Firewall", "Azure Virtual WAN"],
+    "correctAnswers": ["Azure Application Gateway with a WAF policy"],
+    "explanation": "Since global CDN reach isn't required, the regional Application Gateway (with WAF) is the right-sized choice over the global Front Door.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-3-14",
+    "objectiveId": "o2-3",
+    "type": "multiple",
+    "prompt": "Which two statements about Azure DDoS IP Protection are correct? (Choose two.)",
+    "choices": [
+      "It uses a pay-per-protected-IP pricing model",
+      "It includes rapid response support and cost protection guarantees",
+      "It shares the same core mitigation engine as DDoS Network Protection",
+      "It is a Web Application Firewall feature"
+    ],
+    "correctAnswers": ["It uses a pay-per-protected-IP pricing model", "It shares the same core mitigation engine as DDoS Network Protection"],
+    "explanation": "IP Protection is priced per protected IP and shares the same engine as Network Protection, but does not include rapid response support or cost protection — those are Network Protection value-adds.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o2-3-15",
+    "objectiveId": "o2-3",
+    "type": "multiple",
+    "prompt": "Which two statements correctly distinguish Application Gateway from Front Door? (Choose two.)",
+    "choices": [
+      "Application Gateway is a regional service",
+      "Front Door is a global service",
+      "Neither service can have a WAF policy attached",
+      "Application Gateway provides built-in CDN acceleration"
+    ],
+    "correctAnswers": ["Application Gateway is a regional service", "Front Door is a global service"],
+    "explanation": "Scope is the defining difference: Application Gateway is regional, Front Door is global (and includes CDN); both can host a WAF policy.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-3-16",
+    "objectiveId": "o2-3",
+    "type": "case-study",
+    "caseStudyId": "cs-fabrikam-network",
+    "prompt": "Referring to requirement 5 (internal API reachable from the internet, protected against SQL injection/XSS, global scale with low latency): which solution fits best?",
+    "choices": [
+      "Azure Front Door with a WAF policy in Prevention mode",
+      "Azure Application Gateway alone, without a WAF",
+      "Azure Firewall with application rules only",
+      "A private endpoint on the API"
+    ],
+    "correctAnswers": ["Azure Front Door with a WAF policy in Prevention mode"],
+    "explanation": "Global reach and low latency point to Front Door; OWASP protection requires an attached WAF policy set to Prevention mode.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-3-17",
+    "objectiveId": "o2-3",
+    "type": "case-study",
+    "caseStudyId": "cs-fabrikam-network",
+    "prompt": "Referring to requirement 6 (protect critical public IPs from volumetric DDoS attacks with full mitigation support, rapid response, and cost protection): which tier should Fabrikam choose?",
+    "choices": ["DDoS Network Protection", "DDoS IP Protection", "The default DDoS protection included with every public IP, with no upgrade", "A Web Application Firewall policy"],
+    "correctAnswers": ["DDoS Network Protection"],
+    "explanation": "Rapid response support and cost protection are value-added services specific to the DDoS Network Protection tier — DDoS IP Protection shares the mitigation engine but omits them.",
+    "difficulty": "hard"
+  }
+]

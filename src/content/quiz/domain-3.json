@@ -1,0 +1,676 @@
+[
+  {
+    "id": "q-o3-1-01",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "What does Azure Bastion provide?",
+    "choices": [
+      "Browser-based RDP/SSH to VMs through the Azure portal over TLS, with no public IP required on the VM",
+      "A VPN tunnel from on-premises to Azure",
+      "A managed Kubernetes control plane",
+      "A private DNS zone for VM name resolution"
+    ],
+    "correctAnswers": ["Browser-based RDP/SSH to VMs through the Azure portal over TLS, with no public IP required on the VM"],
+    "explanation": "Bastion removes the need for a public IP and open RDP/SSH ports on the VM itself.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-1-02",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "How does just-in-time (JIT) VM access work?",
+    "choices": [
+      "Management ports are closed by default and opened only on request, for a specific source IP and limited time",
+      "It permanently opens all management ports for convenience",
+      "It replaces the need for any NSG",
+      "It only applies to Linux VMs"
+    ],
+    "correctAnswers": ["Management ports are closed by default and opened only on request, for a specific source IP and limited time"],
+    "explanation": "JIT keeps ports closed until an explicit, time-bound, source-restricted request opens them, then auto-closes them.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-1-03",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "Where do you enable just-in-time VM access?",
+    "choices": [
+      "Microsoft Defender for Cloud ▸ Workload protections ▸ Just-in-time VM access",
+      "Azure Firewall ▸ Rules",
+      "Key Vault ▸ Access configuration",
+      "Azure Policy ▸ Definitions"
+    ],
+    "correctAnswers": ["Microsoft Defender for Cloud ▸ Workload protections ▸ Just-in-time VM access"],
+    "explanation": "JIT VM access is a Microsoft Defender for Cloud workload protection feature.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-1-04",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "What does an AKS 'private cluster' mean?",
+    "choices": [
+      "The Kubernetes API server has no public endpoint",
+      "All pods run without any network policy",
+      "Only private container images can be deployed",
+      "The cluster cannot be accessed at all"
+    ],
+    "correctAnswers": ["The Kubernetes API server has no public endpoint"],
+    "explanation": "A private AKS cluster removes the public endpoint for the API server, requiring network-level access (VNet, peering, or VPN) to manage it.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-05",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "What is the purpose of Kubernetes network policies in AKS?",
+    "choices": ["To control pod-to-pod traffic within the cluster", "To encrypt data at rest on the nodes", "To manage node OS patching", "To scale the cluster automatically"],
+    "correctAnswers": ["To control pod-to-pod traffic within the cluster"],
+    "explanation": "Network policies (Azure Network Policy or Calico) restrict which pods can communicate with which other pods.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-06",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "What is the recommended way to authenticate and authorize users against an AKS cluster?",
+    "choices": [
+      "Microsoft Entra integration with Azure RBAC for Kubernetes",
+      "A shared local cluster-admin password",
+      "The Azure Container Registry admin account",
+      "Anonymous access with no authentication"
+    ],
+    "correctAnswers": ["Microsoft Entra integration with Azure RBAC for Kubernetes"],
+    "explanation": "This replaces static kubeconfig credentials or local admin accounts with governable, auditable Entra-backed identities.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-1-07",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "Which Defender for Cloud capability specifically scans container images and monitors AKS runtime behavior?",
+    "choices": ["Microsoft Defender for Containers", "Microsoft Defender for Servers", "Microsoft Defender for SQL", "Microsoft Defender EASM"],
+    "correctAnswers": ["Microsoft Defender for Containers"],
+    "explanation": "Defender for Containers is the plan focused on container image scanning and AKS runtime protection.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-1-08",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "What is a recommended security best practice for Azure Container Registry (ACR)?",
+    "choices": [
+      "Disable the shared admin account and use Azure RBAC or repository-scoped tokens instead",
+      "Keep the admin account enabled for convenience",
+      "Make the registry publicly readable by default",
+      "Share one admin password across all developers"
+    ],
+    "correctAnswers": ["Disable the shared admin account and use Azure RBAC or repository-scoped tokens instead"],
+    "explanation": "The admin account is a shared, non-attributable credential and should be disabled in favor of individually governed RBAC/token access.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-1-09",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "How can you remove public network exposure from an Azure Container Registry?",
+    "choices": ["Add a private endpoint to the registry", "Disable image scanning", "Enable the admin account", "Enable double encryption"],
+    "correctAnswers": ["Add a private endpoint to the registry"],
+    "explanation": "A private endpoint gives the registry a private IP inside your VNet, removing public exposure.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-10",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "How does Azure Disk Encryption (ADE) work?",
+    "choices": [
+      "It encrypts OS/data volumes inside the guest using BitLocker (Windows) or DM-Crypt (Linux), with keys stored in Key Vault",
+      "It encrypts only the VM's temporary disk, using a hardware key",
+      "It requires no key management at all",
+      "It replaces the platform's default encryption at rest"
+    ],
+    "correctAnswers": ["It encrypts OS/data volumes inside the guest using BitLocker (Windows) or DM-Crypt (Linux), with keys stored in Key Vault"],
+    "explanation": "ADE is an in-guest encryption approach layered on top of the always-on platform-managed encryption at rest.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-1-11",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "What distinguishes 'encryption at host' from Azure Disk Encryption (ADE)?",
+    "choices": [
+      "Encryption at host works at the VM host level, covering temp disks and caches, with no in-guest agent required",
+      "Encryption at host requires BitLocker inside the guest, just like ADE",
+      "Encryption at host only applies to Linux VMs",
+      "Encryption at host and ADE are the exact same feature"
+    ],
+    "correctAnswers": ["Encryption at host works at the VM host level, covering temp disks and caches, with no in-guest agent required"],
+    "explanation": "Encryption at host operates outside the guest OS, covering temp disks/caches that in-guest ADE does not, without needing an agent.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-12",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "What does confidential disk encryption bind the OS disk's encryption key to?",
+    "choices": [
+      "The VM's hardware-based trusted execution environment (TEE), for confidential VMs",
+      "A software-only key stored in the guest OS",
+      "The Azure Storage account's infrastructure key",
+      "Nothing — it uses no key at all"
+    ],
+    "correctAnswers": ["The VM's hardware-based trusted execution environment (TEE), for confidential VMs"],
+    "explanation": "Confidential disk encryption is specific to confidential VMs, binding the key to the hardware TEE.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-13",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "What does deploying Azure API Management in 'internal' VNet mode mean?",
+    "choices": [
+      "The API Management gateway has no public endpoint at all",
+      "Only the developer portal is private; the gateway remains public",
+      "It is identical to external mode but with a WAF attached",
+      "It disables all authentication mechanisms"
+    ],
+    "correctAnswers": ["The API Management gateway has no public endpoint at all"],
+    "explanation": "Internal mode removes the public endpoint entirely; public access (if needed) must come through a fronting service like Application Gateway or Front Door.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o3-1-14",
+    "objectiveId": "o3-1",
+    "type": "multiple",
+    "prompt": "Which two statements about securing Azure API Management are correct? (Choose two.)",
+    "choices": [
+      "Subscription keys should be required on every product, avoiding 'open' products",
+      "Mutual TLS (client certificates) can secure both client-to-APIM and APIM-to-backend calls",
+      "Network isolation is impossible to achieve with API Management",
+      "OAuth 2.0 and OpenID Connect are unsupported by API Management"
+    ],
+    "correctAnswers": [
+      "Subscription keys should be required on every product, avoiding 'open' products",
+      "Mutual TLS (client certificates) can secure both client-to-APIM and APIM-to-backend calls"
+    ],
+    "explanation": "APIM supports subscription keys, OAuth2/OIDC, and mutual TLS for both the client-facing and backend-facing legs, and it does support network isolation via internal VNet mode or private endpoints.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-15",
+    "objectiveId": "o3-1",
+    "type": "multiple",
+    "prompt": "Which two statements about disk encryption in Azure are correct? (Choose two.)",
+    "choices": [
+      "Platform-managed encryption at rest is always enabled by default on managed disks",
+      "Azure Disk Encryption (ADE) requires no in-guest agent",
+      "Encryption at host covers temporary disks and caches",
+      "Confidential disk encryption is identical to Azure Disk Encryption"
+    ],
+    "correctAnswers": ["Platform-managed encryption at rest is always enabled by default on managed disks", "Encryption at host covers temporary disks and caches"],
+    "explanation": "Default platform encryption is always on. ADE actually DOES require in-guest BitLocker/DM-Crypt (so it does need guest-level support), whereas encryption at host is the option with no in-guest agent and covers temp disks/caches. Confidential disk encryption is a distinct, hardware-bound mechanism, not identical to ADE.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o3-1-16",
+    "objectiveId": "o3-1",
+    "type": "case-study",
+    "caseStudyId": "cs-northwind-compute",
+    "prompt": "Referring to requirement 1 (RDP into management VMs with no public IP, access granted only on request for a limited time): which combination satisfies this?",
+    "choices": [
+      "Azure Bastion for portal-based RDP, combined with just-in-time (JIT) VM access to gate when the RDP port is open",
+      "A public IP on each VM with a strong NSG rule",
+      "A private endpoint on each VM",
+      "Azure Firewall alone, with no Bastion or JIT"
+    ],
+    "correctAnswers": ["Azure Bastion for portal-based RDP, combined with just-in-time (JIT) VM access to gate when the RDP port is open"],
+    "explanation": "Bastion removes the need for a public IP; JIT ensures the RDP port itself is closed until explicitly requested for a limited time — the two are meant to be combined.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-17",
+    "objectiveId": "o3-1",
+    "type": "case-study",
+    "caseStudyId": "cs-northwind-compute",
+    "prompt": "Referring to requirement 2 (AKS cluster users must authenticate via their corporate identity, not static kubeconfig credentials): what should be configured?",
+    "choices": [
+      "Microsoft Entra integration with Azure RBAC for Kubernetes",
+      "A shared kubeconfig file distributed to all administrators",
+      "The Azure Container Registry admin account",
+      "A single local Kubernetes admin account for the whole team"
+    ],
+    "correctAnswers": ["Microsoft Entra integration with Azure RBAC for Kubernetes"],
+    "explanation": "This is exactly the recommended replacement for static kubeconfig-based cluster access.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-2-01",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "Which method of authorizing access to a storage account is considered most secure?",
+    "choices": ["Microsoft Entra ID with Azure RBAC data roles", "The account's shared access keys", "A shared access signature (SAS)", "Anonymous public access"],
+    "correctAnswers": ["Microsoft Entra ID with Azure RBAC data roles"],
+    "explanation": "Entra ID + RBAC is identity-based and requires no keys to manage, making it the most secure option.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-2-02",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "What is a shared access signature (SAS)?",
+    "choices": ["A scoped, time-limited, revocable token granting specific access rights", "A permanent administrator password", "A certificate used only for TLS", "A type of managed identity"],
+    "correctAnswers": ["A scoped, time-limited, revocable token granting specific access rights"],
+    "explanation": "A SAS grants narrow, time-bound access without sharing the full account key.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-2-03",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "Ranking storage authorization methods from most to least secure, which order is correct?",
+    "choices": [
+      "Entra ID + RBAC > user-delegation SAS > account-key SAS > shared account key",
+      "Shared account key > account-key SAS > user-delegation SAS > Entra ID + RBAC",
+      "All four methods provide identical security",
+      "Account-key SAS > Entra ID + RBAC > shared account key > user-delegation SAS"
+    ],
+    "correctAnswers": ["Entra ID + RBAC > user-delegation SAS > account-key SAS > shared account key"],
+    "explanation": "Identity-based access (Entra ID + RBAC) is strongest; a user-delegation SAS (signed with Entra credentials) beats an account-key SAS, which beats the raw shared account key.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-04",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "Which identity sources can be used for Azure Files identity-based authentication over SMB?",
+    "choices": [
+      "On-premises AD DS, Microsoft Entra Domain Services, or Microsoft Entra Kerberos",
+      "Only on-premises AD DS",
+      "Only Microsoft Entra ID application registrations",
+      "Only local Windows accounts on each client"
+    ],
+    "correctAnswers": ["On-premises AD DS, Microsoft Entra Domain Services, or Microsoft Entra Kerberos"],
+    "explanation": "Azure Files supports exactly these three identity sources for Kerberos-based SMB authentication.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-05",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "How many identity sources for Azure Files identity-based authentication can be enabled on a single storage account?",
+    "choices": ["Exactly one", "Up to two, one for SMB and one for NFS", "As many as needed, mixed freely", "Zero — identity-based auth isn't supported for Azure Files"],
+    "correctAnswers": ["Exactly one"],
+    "explanation": "Only one identity source can be enabled per storage account — you cannot mix AD DS and Entra Kerberos on different shares of the same account.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o3-2-06",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "Once share-level access is granted on an Azure Files share with identity-based authentication, what provides fine-grained control over individual files and folders?",
+    "choices": ["Windows ACLs / NTFS permissions", "SAS tokens per file", "Azure RBAC data roles applied per file", "Blob versioning"],
+    "correctAnswers": ["Windows ACLs / NTFS permissions"],
+    "explanation": "Standard NTFS permissions on files/folders apply, just as on an on-premises SMB share.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-07",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "What does soft delete protect against in Azure Storage?",
+    "choices": [
+      "Accidental or malicious deletion of blobs, containers, or file shares, recoverable within a retention window",
+      "Unauthorized read access to blob data",
+      "Network-level attacks against the storage account",
+      "Slow performance during high traffic"
+    ],
+    "correctAnswers": ["Accidental or malicious deletion of blobs, containers, or file shares, recoverable within a retention window"],
+    "explanation": "Soft delete lets you recover deleted storage objects within a configured retention period.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-2-08",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "What does blob versioning provide?",
+    "choices": ["A history of previous versions of a blob after it is overwritten", "Encryption of blob contents", "Automatic replication to a secondary region", "Access control for individual blob versions only"],
+    "correctAnswers": ["A history of previous versions of a blob after it is overwritten"],
+    "explanation": "Versioning preserves prior states of a blob whenever it's modified or overwritten.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-2-09",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "What makes immutable storage (WORM) different from soft delete and versioning?",
+    "choices": [
+      "It actively prevents modification or deletion of data during the retention period, even by an authorized administrator",
+      "It only protects against accidental overwrite, like versioning",
+      "It only recovers deleted data, like soft delete",
+      "It is a form of encryption, not a retention control"
+    ],
+    "correctAnswers": ["It actively prevents modification or deletion of data during the retention period, even by an authorized administrator"],
+    "explanation": "Immutable storage enforces WORM policies (time-based or legal hold) that block changes/deletion regardless of admin privilege, unlike soft delete or versioning which are recoverable-after-the-fact controls.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-10",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "What does enabling 'Secure transfer required' on a storage account do?",
+    "choices": ["Forces all connections to use HTTPS", "Requires a client certificate for every request", "Enables customer-managed keys automatically", "Enables soft delete automatically"],
+    "correctAnswers": ["Forces all connections to use HTTPS"],
+    "explanation": "This setting enforces encrypted transport (HTTPS) for all requests to the storage account.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-2-11",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "What does Bring Your Own Key (BYOK) mean for Azure Storage encryption?",
+    "choices": [
+      "You supply your own customer-managed key, stored in Key Vault, instead of using the default Microsoft-managed key",
+      "You must manage encryption entirely outside of Azure",
+      "It disables encryption at rest",
+      "It is only available for Azure SQL, not Storage"
+    ],
+    "correctAnswers": ["You supply your own customer-managed key, stored in Key Vault, instead of using the default Microsoft-managed key"],
+    "explanation": "BYOK lets you control the encryption key used for the storage account, via Key Vault.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-2-12",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "What does infrastructure (double) encryption add on top of standard service-level encryption?",
+    "choices": [
+      "A second, independent layer of encryption at the platform/infrastructure level",
+      "A faster encryption algorithm with lower overhead",
+      "Replacement of Microsoft-managed keys with customer-managed keys",
+      "Encryption only for data in transit, not at rest"
+    ],
+    "correctAnswers": ["A second, independent layer of encryption at the platform/infrastructure level"],
+    "explanation": "Double encryption stacks a second, independent encryption layer for the highest-confidentiality workloads.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-13",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "Which storage access method does NOT include a directory-level ACL layer beyond container/blob RBAC?",
+    "choices": ["Azure Blob Storage", "Azure Files with identity-based authentication", "Both provide identical ACL layers", "Neither supports any access control"],
+    "correctAnswers": ["Azure Blob Storage"],
+    "explanation": "Blob Storage relies on Entra RBAC, SAS, or account keys, with no NTFS-style ACL layer — unlike Azure Files with identity-based auth, which adds Windows ACLs on top of share-level access.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-14",
+    "objectiveId": "o3-2",
+    "type": "multiple",
+    "prompt": "Which two statements are correct about Azure Storage data-protection features? (Choose two.)",
+    "choices": [
+      "Soft delete undoes accidental deletion of storage objects",
+      "Immutable storage can be bypassed by an account owner during the retention period",
+      "Versioning preserves the history of blob overwrites",
+      "Bring Your Own Key (BYOK) removes the need for any encryption at rest"
+    ],
+    "correctAnswers": ["Soft delete undoes accidental deletion of storage objects", "Versioning preserves the history of blob overwrites"],
+    "explanation": "Immutable storage specifically CANNOT be bypassed during its retention period (that's the point of WORM), and BYOK changes who controls the key, not whether encryption exists (encryption at rest is always on regardless).",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-15",
+    "objectiveId": "o3-2",
+    "type": "multiple",
+    "prompt": "Which two statements about Azure Files identity-based authentication are correct? (Choose two.)",
+    "choices": [
+      "Only one identity source can be enabled per storage account",
+      "You can mix AD DS and Microsoft Entra Kerberos across different shares of the same account",
+      "Microsoft Entra Kerberos requires no on-premises domain controller",
+      "NTFS ACLs become irrelevant once Microsoft Entra Kerberos is enabled"
+    ],
+    "correctAnswers": ["Only one identity source can be enabled per storage account", "Microsoft Entra Kerberos requires no on-premises domain controller"],
+    "explanation": "The one-identity-source-per-account limit is strict, and Entra Kerberos is specifically the cloud-only option requiring no domain controller. NTFS ACLs remain fully relevant for file/folder-level control regardless of identity source.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o3-2-16",
+    "objectiveId": "o3-2",
+    "type": "case-study",
+    "caseStudyId": "cs-northwind-compute",
+    "prompt": "Referring to requirement 3 (migrate an on-premises Windows file server to Azure Files, keep NTFS folder permissions, no domain controller in Azure): which configuration fits best?",
+    "choices": [
+      "Enable Microsoft Entra Kerberos authentication for Azure Files, then apply NTFS permissions on the migrated folders",
+      "Enable on-premises AD DS authentication and deploy a domain controller in Azure",
+      "Use SAS tokens for every user needing folder access",
+      "Use Azure RBAC data roles only, with no NTFS layer"
+    ],
+    "correctAnswers": ["Enable Microsoft Entra Kerberos authentication for Azure Files, then apply NTFS permissions on the migrated folders"],
+    "explanation": "Microsoft Entra Kerberos is the cloud-only identity source that requires no domain controller, while still allowing standard NTFS ACLs on individual folders.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-17",
+    "objectiveId": "o3-2",
+    "type": "case-study",
+    "caseStudyId": "cs-northwind-compute",
+    "prompt": "Referring to requirement 4 (blob backups must be protected so even a compromised admin cannot delete or shorten retention during the retention period): which feature satisfies this?",
+    "choices": [
+      "An immutable storage (WORM) policy set to Locked",
+      "Soft delete alone",
+      "Blob versioning alone",
+      "A shared access signature with read-only rights"
+    ],
+    "correctAnswers": ["An immutable storage (WORM) policy set to Locked"],
+    "explanation": "Only a locked immutability policy actively prevents modification or deletion during the retention period, regardless of administrative privilege — soft delete and versioning are both recoverable-after-the-fact, not tamper-proof.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-01",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "What does Transparent Data Encryption (TDE) protect in Azure SQL?",
+    "choices": ["Data at rest — database files and backups — transparently to the application", "Only specific sensitive columns", "Only data in transit", "Only query results shown to end users"],
+    "correctAnswers": ["Data at rest — database files and backups — transparently to the application"],
+    "explanation": "TDE encrypts the whole database at rest and is transparent to the application; it's enabled by default.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-3-02",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "What does Always Encrypted protect, and from whom?",
+    "choices": [
+      "Specific sensitive columns, end-to-end, so even the database engine and administrators never see the plaintext",
+      "The entire database at rest, transparently to the application",
+      "Only data shown in application query results",
+      "Network traffic between the client and the database server"
+    ],
+    "correctAnswers": ["Specific sensitive columns, end-to-end, so even the database engine and administrators never see the plaintext"],
+    "explanation": "Always Encrypted keeps the decryption key on the client side, hiding plaintext from the engine and DBAs alike.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-3-03",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "What does dynamic data masking actually do?",
+    "choices": [
+      "It obscures sensitive values in query results for non-privileged users; the stored data itself is unchanged",
+      "It encrypts sensitive columns at rest",
+      "It permanently deletes sensitive data from the database",
+      "It prevents any user, including admins, from ever seeing the real data"
+    ],
+    "correctAnswers": ["It obscures sensitive values in query results for non-privileged users; the stored data itself is unchanged"],
+    "explanation": "Masking is a display-time convenience control, not encryption — it does not stop a privileged account from seeing the real data.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-3-04",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "Which Azure SQL protection mechanism does NOT stop a privileged database administrator from reading the real underlying values?",
+    "choices": ["Dynamic data masking", "Always Encrypted", "Both stop a privileged administrator equally", "Neither provides any protection"],
+    "correctAnswers": ["Dynamic data masking"],
+    "explanation": "Masking only affects what's returned in query results to non-privileged users; a DBA with sufficient privilege (or direct data access) can still see the real values. Always Encrypted specifically defeats this by keeping the key off the server entirely.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-05",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "Which feature is recommended for highly sensitive columns such as national ID numbers or payment card numbers?",
+    "choices": ["Always Encrypted", "Dynamic data masking", "Transparent Data Encryption alone", "Database auditing alone"],
+    "correctAnswers": ["Always Encrypted"],
+    "explanation": "Always Encrypted is specifically designed for fields where insider/admin access itself is the threat being mitigated.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-3-06",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "What is the benefit of enabling Microsoft Entra database authentication for Azure SQL?",
+    "choices": [
+      "It allows using Entra identities instead of SQL logins, including groups and centralized identity governance",
+      "It automatically encrypts all columns",
+      "It disables auditing",
+      "It is required before TDE can be enabled"
+    ],
+    "correctAnswers": ["It allows using Entra identities instead of SQL logins, including groups and centralized identity governance"],
+    "explanation": "Entra database authentication brings SQL access under the same identity governance as the rest of Azure, rather than separate SQL logins.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-3-07",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "Which Azure SQL setting disables SQL logins entirely, allowing only Microsoft Entra authentication?",
+    "choices": ["Support only Microsoft Entra authentication", "Enable Always Encrypted", "Enable Transparent Data Encryption", "Set the Microsoft Entra admin"],
+    "correctAnswers": ["Support only Microsoft Entra authentication"],
+    "explanation": "This dedicated setting fully disables SQL authentication; it's a one-way hardening step that should be confirmed against application dependencies first.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-08",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "Where can Azure SQL database auditing send recorded events for later investigation?",
+    "choices": [
+      "A Log Analytics workspace, a storage account, or Event Hubs",
+      "Only to a local text file on the SQL server",
+      "Only to Microsoft Support directly",
+      "Auditing has no configurable destination"
+    ],
+    "correctAnswers": ["A Log Analytics workspace, a storage account, or Event Hubs"],
+    "explanation": "Database auditing supports these three destinations for recorded database events.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-09",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "Is Transparent Data Encryption (TDE) enabled by default on new Azure SQL databases?",
+    "choices": ["Yes, it is enabled by default", "No, it must always be manually enabled", "Only for Azure SQL Managed Instance, not Azure SQL Database", "Only when Always Encrypted is also enabled"],
+    "correctAnswers": ["Yes, it is enabled by default"],
+    "explanation": "TDE is on by default for Azure SQL databases and managed instances.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-3-10",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "Where does the decryption key live when using Always Encrypted?",
+    "choices": ["Entirely on the client side — it is never given to the database engine", "On the SQL server, alongside the encrypted data", "In the database's transaction log", "It doesn't use a key at all"],
+    "correctAnswers": ["Entirely on the client side — it is never given to the database engine"],
+    "explanation": "Keeping the key client-side is what prevents the engine and administrators from ever seeing plaintext.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-11",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "Where do you configure the Microsoft Entra admin for an Azure SQL server?",
+    "choices": [
+      "SQL server ▸ Microsoft Entra ID (Microsoft Entra admin) ▸ Set admin",
+      "Key Vault ▸ Access configuration",
+      "Defender for Cloud ▸ Environment settings",
+      "Azure Policy ▸ Definitions"
+    ],
+    "correctAnswers": ["SQL server ▸ Microsoft Entra ID (Microsoft Entra admin) ▸ Set admin"],
+    "explanation": "This is the direct portal path for assigning an Entra user or group as the SQL server's Entra administrator.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-12",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "Of TDE, Always Encrypted, and dynamic data masking, which one is NOT a form of encryption?",
+    "choices": ["Dynamic data masking", "Transparent Data Encryption", "Always Encrypted", "All three are equally strong encryption"],
+    "correctAnswers": ["Dynamic data masking"],
+    "explanation": "Masking only changes what's displayed in results — the stored data is never actually encrypted or altered by this feature.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-13",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "A support team needs read access to a customer table for troubleshooting, but card numbers should not appear in their query results, without changing the application. Which feature fits best?",
+    "choices": ["Dynamic data masking", "Always Encrypted", "Transparent Data Encryption", "Database auditing"],
+    "correctAnswers": ["Dynamic data masking"],
+    "explanation": "Masking is the lightweight, no-app-change way to hide values in results for a specific class of users, without touching how the data is stored.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-14",
+    "objectiveId": "o3-3",
+    "type": "multiple",
+    "prompt": "Which two statements are correct? (Choose two.)",
+    "choices": [
+      "Transparent Data Encryption encrypts the whole database at rest",
+      "Always Encrypted hides column data from database administrators",
+      "Dynamic data masking is a strong cryptographic protection against administrators",
+      "Transparent Data Encryption is disabled by default"
+    ],
+    "correctAnswers": ["Transparent Data Encryption encrypts the whole database at rest", "Always Encrypted hides column data from database administrators"],
+    "explanation": "TDE is enabled by default (not disabled), and masking is explicitly NOT a strong cryptographic boundary — those are the two false options here.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-15",
+    "objectiveId": "o3-3",
+    "type": "multiple",
+    "prompt": "Which two statements are correct? (Choose two.)",
+    "choices": [
+      "Always Encrypted keeps its decryption key on the client side",
+      "Database auditing can send events to Event Hubs",
+      "Enabling 'Support only Microsoft Entra authentication' is easily reversible with no application impact",
+      "Dynamic data masking permanently modifies the stored data"
+    ],
+    "correctAnswers": ["Always Encrypted keeps its decryption key on the client side", "Database auditing can send events to Event Hubs"],
+    "explanation": "Forcing Entra-only auth is a one-way hardening step that can break SQL-login-dependent apps, and masking never modifies stored data — those are the two false options.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-16",
+    "objectiveId": "o3-3",
+    "type": "case-study",
+    "caseStudyId": "cs-northwind-compute",
+    "prompt": "Referring to requirement 5 (national ID columns must remain unreadable in plaintext even to database administrators): which feature should Northwind use?",
+    "choices": ["Always Encrypted", "Dynamic data masking", "Transparent Data Encryption alone", "Database auditing alone"],
+    "correctAnswers": ["Always Encrypted"],
+    "explanation": "Only Always Encrypted keeps plaintext away from the database engine and its administrators.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o3-3-17",
+    "objectiveId": "o3-3",
+    "type": "case-study",
+    "caseStudyId": "cs-northwind-compute",
+    "prompt": "Referring to requirement 6 (compliance must review a full history of who queried a sensitive table and when): which feature should Northwind enable?",
+    "choices": ["Database auditing", "Dynamic data masking", "Always Encrypted", "Transparent Data Encryption"],
+    "correctAnswers": ["Database auditing"],
+    "explanation": "Auditing is specifically designed to record and preserve a history of database events like queries, logins, and schema changes.",
+    "difficulty": "easy"
+  }
+]

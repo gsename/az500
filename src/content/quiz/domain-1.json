@@ -1,0 +1,450 @@
+[
+  {
+    "id": "q-o1-1-01",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "Which three components together make up an Azure RBAC role assignment?",
+    "choices": [
+      "A security principal, a role definition, and a scope",
+      "A user, a password, and an MFA method",
+      "An application, a client secret, and a tenant",
+      "A subscription, a resource group, and a resource"
+    ],
+    "correctAnswers": ["A security principal, a role definition, and a scope"],
+    "explanation": "Azure RBAC grants access by combining a security principal (who), a role definition (what permissions), and a scope (where). Permissions inherit downward from the assigned scope.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-1-02",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "Which built-in Azure role can create and manage resources but cannot grant other users access to them?",
+    "choices": ["Owner", "Contributor", "Reader", "User Access Administrator"],
+    "correctAnswers": ["Contributor"],
+    "explanation": "Contributor can manage resources but cannot assign roles to others. Only Owner (and User Access Administrator, for access only) can grant access.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-1-03",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "Which built-in Azure role can assign roles to other users but cannot manage the underlying resources itself?",
+    "choices": ["Owner", "Contributor", "Reader", "User Access Administrator"],
+    "correctAnswers": ["User Access Administrator"],
+    "explanation": "User Access Administrator manages access (role assignments) only — it does not grant permission to create, modify, or delete the resources themselves.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-1-04",
+    "objectiveId": "o1-1",
+    "type": "multiple",
+    "prompt": "Which two statements about Azure RBAC scope inheritance are correct? (Choose two.)",
+    "choices": [
+      "A role assigned at the subscription level applies to all resource groups and resources beneath it",
+      "A role assigned at a resource group does not apply to the resources within it",
+      "Permissions inherit downward from the scope they are assigned at",
+      "Assigning a role at a single resource grants that same access across the entire subscription"
+    ],
+    "correctAnswers": [
+      "A role assigned at the subscription level applies to all resource groups and resources beneath it",
+      "Permissions inherit downward from the scope they are assigned at"
+    ],
+    "explanation": "Azure RBAC permissions flow downward: a role granted at a higher scope (management group or subscription) automatically applies to everything nested beneath it. The reverse is not true — a role assigned at a lower scope never grants access further up.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-05",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "In a custom Azure role definition (JSON), which property lists the control-plane permissions that ARE granted?",
+    "choices": ["Actions", "DataActions", "NotActions", "AssignableScopes"],
+    "correctAnswers": ["Actions"],
+    "explanation": "Actions lists granted control-plane permissions; NotActions subtracts from them. DataActions/NotDataActions cover the data plane instead, and AssignableScopes defines where the role can be assigned.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-06",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "Which property of a custom Azure role definition specifies the scopes (management groups, subscriptions, resource groups) where the role may be assigned?",
+    "choices": ["Actions", "DataActions", "AssignableScopes", "NotActions"],
+    "correctAnswers": ["AssignableScopes"],
+    "explanation": "AssignableScopes controls where a custom role can be assigned; it does not itself grant or deny any permission.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-1-07",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "You are writing a custom Azure role that must allow reading and writing blob data, without granting any permission to change the storage account's network or firewall configuration. Which property should define the blob read/write permissions?",
+    "choices": ["Actions", "DataActions", "NotDataActions", "AssignableScopes"],
+    "correctAnswers": ["DataActions"],
+    "explanation": "Reading/writing blob data is a data-plane operation, controlled by DataActions. Actions/NotActions instead control control-plane operations, such as changing the storage account's configuration.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-08",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "Which statement correctly separates Azure roles from Microsoft Entra roles?",
+    "choices": [
+      "They are the same system under two different names",
+      "Azure roles govern access to Azure resources; Microsoft Entra roles govern the directory/tenant",
+      "Microsoft Entra roles govern virtual machines; Azure roles govern user accounts",
+      "Only Microsoft Entra roles can be customized"
+    ],
+    "correctAnswers": ["Azure roles govern access to Azure resources; Microsoft Entra roles govern the directory/tenant"],
+    "explanation": "Azure RBAC and Microsoft Entra roles are two independent permission systems, each with their own role definitions and management surface.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-1-09",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "A Global Administrator has no Azure RBAC role assignments and cannot see any subscriptions in the Azure portal, but urgently needs to fix a broken role assignment on a subscription. Which built-in Microsoft Entra ID capability lets them grant themselves access?",
+    "choices": [
+      "Activating a PIM-eligible Global Administrator role",
+      "Setting the 'Access management for Azure resources' toggle to Yes under Microsoft Entra ID ▸ Properties",
+      "Creating a custom Microsoft Entra role",
+      "Enabling Conditional Access for workload identities"
+    ],
+    "correctAnswers": ["Setting the 'Access management for Azure resources' toggle to Yes under Microsoft Entra ID ▸ Properties"],
+    "explanation": "This toggle assigns the calling Global Administrator the User Access Administrator role at the tenant root scope (/), for that user only. It is fully audited in Entra directory audit logs and Azure activity logs, and Microsoft recommends switching it back to No once the emergency task is complete.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o1-1-10",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "In Microsoft Entra Privileged Identity Management, what does an 'eligible' assignment mean?",
+    "choices": [
+      "The user has permanent, always-on access to the role",
+      "The user can activate the role when needed, subject to any configured requirements, but does not hold the permission until then",
+      "The user has been removed from the role entirely",
+      "The user can never use the role"
+    ],
+    "correctAnswers": ["The user can activate the role when needed, subject to any configured requirements, but does not hold the permission until then"],
+    "explanation": "Eligible means the principal CAN activate the role — activation (with any required MFA, justification, or approval) is what actually grants the time-bound, active permission.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-1-11",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "Which of the following can a PIM role setting require before an eligible assignment can be activated?",
+    "choices": [
+      "Nothing — activation is always instant and unconditional",
+      "MFA, a justification, and approval by a designated approver, depending on configuration",
+      "Only a physical hardware security key, with no other option",
+      "A support ticket number validated by Microsoft"
+    ],
+    "correctAnswers": ["MFA, a justification, and approval by a designated approver, depending on configuration"],
+    "explanation": "PIM role settings can independently require MFA on activation, a written justification, and/or approval from a designated approver, along with a maximum activation duration.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-1-12",
+    "objectiveId": "o1-1",
+    "type": "multiple",
+    "prompt": "Which two types of roles can Microsoft Entra Privileged Identity Management govern? (Choose two.)",
+    "choices": ["Microsoft Entra roles", "Network security group rules", "Azure resource roles", "DNS zone delegations"],
+    "correctAnswers": ["Microsoft Entra roles", "Azure resource roles"],
+    "explanation": "PIM manages just-in-time elevation for both Microsoft Entra directory roles and Azure resource roles (and, as of 2026, PIM for Groups) — it has no relation to NSGs or DNS.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-13",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "Which Conditional Access 'Target resources' selection applies a policy across the Azure portal, Azure PowerShell, and Azure CLI?",
+    "choices": ["Office 365", "Windows Azure Service Management API", "Microsoft Graph", "All resources (All cloud apps)"],
+    "correctAnswers": ["Windows Azure Service Management API"],
+    "explanation": "The Azure Resource Manager control plane (portal, PowerShell, CLI) is grouped under the 'Windows Azure Service Management API' resource in Conditional Access. Older material sometimes calls this same suite 'Microsoft Azure Management' — both names refer to the same target.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-14",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "Before switching a newly created Conditional Access policy fully 'On', what mode should you use first to evaluate its impact without blocking any sign-ins?",
+    "choices": ["Report-only", "Audit", "Preview", "Simulation"],
+    "correctAnswers": ["Report-only"],
+    "explanation": "Report-only mode evaluates the policy and logs what would have happened, without enforcing the grant or block controls — the recommended way to pilot a new policy.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-1-15",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "Which accounts should typically be excluded from a Conditional Access policy that requires MFA for the Azure management plane?",
+    "choices": [
+      "All standard end users",
+      "Emergency access (break-glass) accounts and service principals",
+      "Only external guest users",
+      "No accounts should ever be excluded from a security policy"
+    ],
+    "correctAnswers": ["Emergency access (break-glass) accounts and service principals"],
+    "explanation": "Break-glass accounts must never risk lockout from a policy misconfiguration, and service principals are non-interactive and aren't evaluated the same way as user sign-ins — both are standard exclusions.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-16",
+    "objectiveId": "o1-1",
+    "type": "case-study",
+    "caseStudyId": "cs-contoso-identity",
+    "prompt": "Referring to requirement 1 (admins hold no standing Owner/Contributor rights, but can elevate for up to 4 hours with approval and MFA): which feature satisfies this, and how should it be configured?",
+    "choices": [
+      "Privileged Identity Management, with eligible (not active) assignments, MFA on activation, approval required, and maximum activation duration set to 4 hours",
+      "A Conditional Access policy requiring MFA for the Azure Management app",
+      "A custom Azure role with a 4-hour AssignableScopes expiry",
+      "Azure Policy with a DeployIfNotExists effect on role assignments"
+    ],
+    "correctAnswers": ["Privileged Identity Management, with eligible (not active) assignments, MFA on activation, approval required, and maximum activation duration set to 4 hours"],
+    "explanation": "PIM is purpose-built for just-in-time, approval-gated, time-bound elevation — exactly what requirement 1 describes. Conditional Access controls sign-in requirements, not standing role assignments; AssignableScopes has no expiry concept.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-17",
+    "objectiveId": "o1-1",
+    "type": "case-study",
+    "caseStudyId": "cs-contoso-identity",
+    "prompt": "Referring to requirement 2 (MFA required for Azure management sign-ins, break-glass account never locked out): which configuration satisfies this?",
+    "choices": [
+      "A Conditional Access policy targeting 'Windows Azure Service Management API', requiring MFA, with the break-glass account explicitly excluded",
+      "Enabling per-VM just-in-time access for every administrator",
+      "A Conditional Access policy targeting 'Office 365', requiring MFA for all users with no exclusions",
+      "Disabling the break-glass account's password entirely"
+    ],
+    "correctAnswers": ["A Conditional Access policy targeting 'Windows Azure Service Management API', requiring MFA, with the break-glass account explicitly excluded"],
+    "explanation": "The Azure management plane is targeted via the 'Windows Azure Service Management API' resource; the break-glass account must be an explicit exclusion so a policy misconfiguration can never lock it out.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-01",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "When a developer registers a new application in Microsoft Entra ID, which two objects are created?",
+    "choices": [
+      "A global application object and a service principal",
+      "Only a service principal, with no application object",
+      "Only an application object, with no service principal",
+      "A managed identity and a role assignment"
+    ],
+    "correctAnswers": ["A global application object and a service principal"],
+    "explanation": "Registering an app creates a global application object (the blueprint) plus a service principal — the app's local identity — in the home tenant.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-2-02",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "Where do you configure an application's redirect URIs, certificates & secrets, and exposed API definition?",
+    "choices": ["App registrations", "Enterprise applications", "Conditional Access", "Privileged Identity Management"],
+    "correctAnswers": ["App registrations"],
+    "explanation": "App registrations is where the app's blueprint is defined: redirect URIs, certificates & secrets, exposed APIs, and requested API permissions.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-2-03",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "Where do you assign users/groups, enable single sign-on, and review OAuth permission grants that have actually been consented for an application in your tenant?",
+    "choices": ["App registrations", "Enterprise applications", "Privileged Identity Management", "Key Vault"],
+    "correctAnswers": ["Enterprise applications"],
+    "explanation": "Enterprise applications is where you govern the app's service principal within your own tenant — user/group assignment, SSO, provisioning, and consent review.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-2-04",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "A multi-tenant SaaS application (one app registration) is used by 50 different customer tenants. How many service principals exist for this application across those tenants?",
+    "choices": [
+      "Exactly one, shared across all 50 tenants",
+      "One per consuming tenant — up to 50",
+      "None; only the global application object exists",
+      "One per individual end user"
+    ],
+    "correctAnswers": ["One per consuming tenant — up to 50"],
+    "explanation": "One app registration produces a distinct service principal in every tenant that consents to and uses the application.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-05",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "Which permission type lets an application act on behalf of a signed-in user, limited to what that user is allowed to do?",
+    "choices": ["Delegated permissions", "Application permissions", "Conditional permissions", "Managed permissions"],
+    "correctAnswers": ["Delegated permissions"],
+    "explanation": "Delegated permissions require a signed-in user and are bounded by that user's own access.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-2-06",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "Which permission type always requires admin consent, regardless of how narrow the specific permission is?",
+    "choices": ["Delegated permissions", "Application permissions", "Legacy permissions", "None — all permissions can be self-consented"],
+    "correctAnswers": ["Application permissions"],
+    "explanation": "Application permissions let the app act as itself with no user present, so only an administrator can consent to them.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-2-07",
+    "objectiveId": "o1-2",
+    "type": "multiple",
+    "prompt": "Which two statements about consent in Microsoft Entra ID are correct? (Choose two.)",
+    "choices": [
+      "Application permissions always require admin consent",
+      "A standard user can grant admin consent for any application permission on their own",
+      "Administrators can restrict user consent to verified publishers and low-impact permissions only",
+      "Admin consent is never required for delegated permissions"
+    ],
+    "correctAnswers": [
+      "Application permissions always require admin consent",
+      "Administrators can restrict user consent to verified publishers and low-impact permissions only"
+    ],
+    "explanation": "Application permissions always need an administrator. Administrators can also tighten the tenant-wide user-consent policy to only verified publishers and low-impact permissions, routing everything else through the admin consent workflow.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-08",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "Where do you restrict tenant-wide user consent to verified publishers and low-impact permissions only?",
+    "choices": [
+      "Enterprise applications ▸ Consent and permissions",
+      "App registrations ▸ Certificates & secrets",
+      "Privileged Identity Management ▸ Settings",
+      "Key Vault ▸ Access configuration"
+    ],
+    "correctAnswers": ["Enterprise applications ▸ Consent and permissions"],
+    "explanation": "This tenant-wide consent policy is configured under Enterprise applications ▸ Consent and permissions.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-09",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "Which statement best describes a service principal?",
+    "choices": [
+      "The global, tenant-independent definition of an application",
+      "The local identity/representation of an application within a specific tenant",
+      "A category of Conditional Access policy",
+      "A network-layer security construct similar to an NSG"
+    ],
+    "correctAnswers": ["The local identity/representation of an application within a specific tenant"],
+    "explanation": "The service principal is the app's local, governable identity in a given tenant; the application object is the separate, global blueprint.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-2-10",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "Which type of managed identity is tied to the lifecycle of a single Azure resource and is deleted automatically when that resource is deleted?",
+    "choices": ["System-assigned", "User-assigned", "Service-assigned", "Tenant-assigned"],
+    "correctAnswers": ["System-assigned"],
+    "explanation": "A system-assigned managed identity is created on, and bound to, exactly one resource, and is removed automatically with it.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-2-11",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "Which type of managed identity is created as its own standalone resource and can be attached to multiple Azure resources?",
+    "choices": ["System-assigned", "User-assigned", "Service-assigned", "Tenant-assigned"],
+    "correctAnswers": ["User-assigned"],
+    "explanation": "A user-assigned managed identity is a standalone resource that can be shared across multiple resources and managed independently of any one of them.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-2-12",
+    "objectiveId": "o1-2",
+    "type": "multiple",
+    "prompt": "Which two statements about a system-assigned managed identity are correct? (Choose two.)",
+    "choices": [
+      "It can be shared across multiple VMs at once",
+      "It is deleted automatically when its associated resource is deleted",
+      "It requires you to store and rotate a client secret",
+      "Its lifecycle is tied to a single Azure resource"
+    ],
+    "correctAnswers": [
+      "It is deleted automatically when its associated resource is deleted",
+      "Its lifecycle is tied to a single Azure resource"
+    ],
+    "explanation": "System-assigned identities are 1:1 with their resource — created and destroyed together — and Azure manages their credentials automatically, so there's nothing to store or rotate.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-13",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "A workload runs on 5 Azure VMs. All 5 must share the exact same identity to access a Key Vault, and that identity must persist even if individual VMs are rebuilt or replaced. Which identity type fits best?",
+    "choices": ["System-assigned managed identity on each VM", "User-assigned managed identity attached to all 5 VMs", "A service principal with a shared client secret", "A SAS token distributed to each VM"],
+    "correctAnswers": ["User-assigned managed identity attached to all 5 VMs"],
+    "explanation": "Only a user-assigned managed identity is a standalone resource that multiple VMs can share and that survives independently of any single VM's lifecycle.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-14",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "Why is a managed identity generally preferred over a service principal with a client secret for a workload running on an Azure resource?",
+    "choices": [
+      "It grants broader permissions by default",
+      "There is no secret to store, leak, or rotate — Azure manages the credential automatically",
+      "It is the only option that supports Microsoft Graph",
+      "It removes the need for any role assignment"
+    ],
+    "correctAnswers": ["There is no secret to store, leak, or rotate — Azure manages the credential automatically"],
+    "explanation": "The security benefit of a managed identity is entirely about credential handling, not broader permissions or bypassing RBAC — a managed identity still needs role assignments like any other principal.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-2-15",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "All managed identities are service principals. Which statement about the reverse relationship is correct?",
+    "choices": [
+      "All service principals are also managed identities",
+      "Not all service principals are managed identities — a standard app registration's service principal still requires you to manage its own credentials",
+      "Service principals and managed identities are unrelated, independent concepts",
+      "A service principal can only exist without any assigned permissions"
+    ],
+    "correctAnswers": ["Not all service principals are managed identities — a standard app registration's service principal still requires you to manage its own credentials"],
+    "explanation": "Every managed identity is implemented as a service principal, but a regular app registration also has a service principal whose secrets/certificates you are responsible for — it is not a managed identity unless Azure creates and rotates its credentials automatically.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-16",
+    "objectiveId": "o1-2",
+    "type": "case-study",
+    "caseStudyId": "cs-contoso-identity",
+    "prompt": "Referring to requirement 3 (a background invoicing daemon with no signed-in user must read data from Microsoft Graph): which permission type and consent should Contoso configure?",
+    "choices": [
+      "Delegated permissions with user consent",
+      "Application permissions with admin consent",
+      "No permissions are required for background services",
+      "Delegated permissions with no consent needed"
+    ],
+    "correctAnswers": ["Application permissions with admin consent"],
+    "explanation": "No user is signed in, so the app must use application permissions acting as itself — which always require admin consent.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o1-2-17",
+    "objectiveId": "o1-2",
+    "type": "case-study",
+    "caseStudyId": "cs-contoso-identity",
+    "prompt": "Referring to requirement 4 (a deployment pipeline on an Azure VM must authenticate to Key Vault with no stored client secret): what should be configured on the VM?",
+    "choices": [
+      "A managed identity (system-assigned or user-assigned) assigned to the VM, granted access to the Key Vault",
+      "A service principal with a client secret stored in the pipeline's environment variables",
+      "A shared access signature generated for the VM",
+      "The Key Vault's own admin account credentials"
+    ],
+    "correctAnswers": ["A managed identity (system-assigned or user-assigned) assigned to the VM, granted access to the Key Vault"],
+    "explanation": "A managed identity is exactly the mechanism for a workload running on an Azure resource to authenticate without any stored secret.",
+    "difficulty": "easy"
+  }
+]

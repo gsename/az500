@@ -1,0 +1,125 @@
+import { Link, useParams } from 'react-router-dom'
+import {
+  objectivesById,
+  domainsById,
+  lessonByObjective,
+  questionsByObjective,
+  labsByObjective,
+} from '../content'
+import RichText, { renderInline } from '../components/RichText'
+import Diagram from '../components/Diagram'
+
+export default function ObjectiveDetail() {
+  const { objectiveId } = useParams<{ objectiveId: string }>()
+  const objective = objectiveId ? objectivesById[objectiveId] : undefined
+  const lesson = objectiveId ? lessonByObjective[objectiveId] : undefined
+  const questionCount = objectiveId ? questionsByObjective[objectiveId]?.length ?? 0 : 0
+  const labs = objectiveId ? labsByObjective[objectiveId] ?? [] : []
+
+  if (!objective || !lesson) {
+    return <p>Objectif introuvable.</p>
+  }
+
+  const domain = domainsById[objective.domainId]
+  const diagrams = lesson.diagrams ?? []
+
+  return (
+    <div>
+      <div className="breadcrumb">
+        <Link to="/domains">Domaines</Link> ·{' '}
+        <Link to={`/domains/${objective.domainId}`}>{domain?.name}</Link>
+      </div>
+
+      <h1>{objective.title}</h1>
+      <div className="chip-row" style={{ marginBottom: '1.25rem' }}>
+        <span className="chip accent">{domain?.name}</span>
+        <span className="chip">{questionCount} questions</span>
+        {diagrams.length > 0 && <span className="chip">{diagrams.length} schéma{diagrams.length > 1 ? 's' : ''}</span>}
+      </div>
+
+      <div className="callout definition">
+        <div className="callout-label">📘 Définition</div>
+        <RichText as="p" text={lesson.summary} />
+      </div>
+
+      {diagrams.length > 0 && (
+        <>
+          <div className="section-title">
+            <span className="si">🧭</span> Schémas
+          </div>
+          {diagrams.map((d) => (
+            <Diagram key={d} id={d} />
+          ))}
+        </>
+      )}
+
+      <div className="section-title">
+        <span className="si">🔑</span> Points clés
+      </div>
+      <ul className="keypoints">
+        {lesson.keyPoints.map((point, i) => (
+          <li key={i}>{renderInline(point)}</li>
+        ))}
+      </ul>
+
+      <div className="section-title">
+        <span className="si">⚠️</span> Pièges fréquents
+      </div>
+      <ul className="trap-list">
+        {lesson.commonPitfalls.map((pitfall, i) => (
+          <li key={i}>{renderInline(pitfall)}</li>
+        ))}
+      </ul>
+
+      <div className="section-title">
+        <span className="si">🎯</span> Compétences officielles (Microsoft Learn)
+      </div>
+      <div className="card">
+        <ul className="skill-list">
+          {objective.officialSkills.map((skill) => (
+            <li key={skill}>{skill}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="section-title">
+        <span className="si">🔗</span> Pour aller plus loin
+      </div>
+      <ul className="link-list">
+        {lesson.learnLinks.map((link) => (
+          <li key={link}>
+            <a href={link} target="_blank" rel="noreferrer">
+              {link}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      {labs.length > 0 && (
+        <>
+          <div className="section-title">
+            <span className="si">🧪</span> Labs pratiques
+          </div>
+          <div className="card">
+            <ul>
+              {labs.map((lab) => (
+                <li key={lab.id}>
+                  <Link to="/labs">{lab.title}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      )}
+
+      <div className="btn-row" style={{ marginTop: '1.5rem' }}>
+        <Link to={`/objectives/${objective.id}/quiz`} className="btn">
+          ▶ Réviser en quiz ({questionCount} questions)
+        </Link>
+        <Link to={`/domains/${objective.domainId}`} className="btn secondary">
+          ← Retour au domaine
+        </Link>
+      </div>
+    </div>
+  )
+}
