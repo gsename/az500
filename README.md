@@ -28,6 +28,38 @@ docker run --rm --name az500-dev -p 5173:5173 -v "${PWD}:/app" -w /app node:20 n
 docker stop az500-dev
 ```
 
+## Partager l'app avec quelqu'un
+
+Deux builds sont disponibles selon le besoin — le point important : **une app
+Vite ne peut pas s'ouvrir en double-cliquant `dist/index.html`**. Les
+navigateurs bloquent par CORS le chargement des `<script type="module">`
+depuis une origine `file://` (comportement standard de tout navigateur
+moderne, pas spécifique à ce projet) — vérifié : ça échoue silencieusement
+(page blanche) sans build dédié.
+
+**Option A — dossier à héberger (`dist/`)** : le build normal. Fonctionne
+servi par n'importe quel serveur statique, sans configuration (le routing par
+`#/...` évite d'avoir besoin d'une règle de réécriture serveur) :
+
+```bash
+npm run build   # génère dist/
+npx serve dist  # ou tout autre serveur statique, ou double-clic si Node est absent : voir option B
+```
+
+**Option B — fichier unique à envoyer (`dist-single/index.html`)** : tout
+(JS + CSS) est inliné dans un seul fichier HTML autonome. **Vérifié** :
+s'ouvre directement en double-clic (`file://`), navigation et sauvegarde de
+la progression (IndexedDB) fonctionnent sans aucun serveur :
+
+```bash
+npm run build:single   # génère dist-single/index.html
+```
+
+C'est la façon la plus simple de partager l'app : envoie juste ce fichier
+(par mail, clé USB, Teams…), la personne le double-clique et l'app tourne
+entièrement en local, hors-ligne, avec sa propre progression sauvegardée dans
+son navigateur.
+
 ## Fonctionnalités
 
 - **Dashboard** : progression globale pondérée par domaine, objectifs à risque
