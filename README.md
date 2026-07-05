@@ -67,8 +67,12 @@ son navigateur.
 - **Domaines → objectifs** : navigation par les 4 domaines officiels
   (pondération Microsoft affichée), fiche de cours condensée par objectif
   (résumé, points clés, pièges fréquents, liens Microsoft Learn).
-- **Quiz ciblé** : par objectif, feedback immédiat avec explication, met à
-  jour la répétition espacée (SM-2) à la fin de la session.
+- **Quiz ciblé** : ~30 questions par objectif (banque de 360 au total). Chaque
+  session tire un sous-ensemble au hasard (10, 20, ou tout), l'ordre des
+  réponses est mélangé (stable pendant la session, différent à chaque passage),
+  feedback immédiat avec explication, et mise à jour de la répétition espacée
+  (SM-2) à la fin. Les distracteurs sont plausibles et dans le même domaine
+  pour éviter la devinette par élimination.
 - **Examen blanc** : tirage pondéré selon les % officiels des 4 domaines,
   chronométré (durée officielle de l'examen), résultat détaillé par domaine
   avec score ramené sur 1000 (seuil de réussite 700).

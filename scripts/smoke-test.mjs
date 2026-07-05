@@ -50,7 +50,7 @@ await shot('03-domain-detail')
 
 // 4. Objective detail
 await page.goto(`${BASE}/#/objectives/o1-1`, { waitUntil: 'networkidle' })
-await page.waitForSelector('text=Réviser en quiz', { timeout: 10000 })
+await page.waitForSelector('text=Tout réviser', { timeout: 10000 })
 const keyPointsCount = await page.locator('text=Points clés').count()
 if (keyPointsCount === 0) fail('Objective detail', 'missing key points section')
 else ok('Objective detail (o1-1) renders lesson content')
@@ -73,7 +73,7 @@ await page.click('.theme-toggle')
 await page.waitForTimeout(200)
 
 // 5. Targeted quiz flow
-await page.click('text=Réviser en quiz')
+await page.click('text=Tout réviser')
 await page.waitForSelector('.choice', { timeout: 10000 })
 for (let i = 0; i < 3; i++) {
   await page.waitForSelector('.choice', { timeout: 10000 })

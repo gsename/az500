@@ -112,10 +112,29 @@ export default function ObjectiveDetail() {
         </>
       )}
 
-      <div className="btn-row" style={{ marginTop: '1.5rem' }}>
-        <Link to={`/objectives/${objective.id}/quiz`} className="btn">
-          ▶ Réviser en quiz ({questionCount} questions)
-        </Link>
+      <div className="section-title">
+        <span className="si">▶</span> Réviser en quiz
+      </div>
+      <div className="card">
+        <p className="muted" style={{ marginTop: 0 }}>
+          {questionCount} questions disponibles. Chaque session tire un sous-ensemble au hasard, avec l'ordre des
+          réponses mélangé — le quiz est différent à chaque passage.
+        </p>
+        <div className="btn-row">
+          {[10, 20].map((n) =>
+            n < questionCount ? (
+              <Link key={n} to={`/objectives/${objective.id}/quiz?n=${n}`} className="btn secondary">
+                Quiz de {n}
+              </Link>
+            ) : null,
+          )}
+          <Link to={`/objectives/${objective.id}/quiz?n=${questionCount}`} className="btn">
+            Tout réviser ({questionCount})
+          </Link>
+        </div>
+      </div>
+
+      <div className="btn-row" style={{ marginTop: '0.5rem' }}>
         <Link to={`/domains/${objective.domainId}`} className="btn secondary">
           ← Retour au domaine
         </Link>

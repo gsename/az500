@@ -3,10 +3,18 @@ import lessonsD1 from './lessons/domain-1.json'
 import lessonsD2 from './lessons/domain-2.json'
 import lessonsD3 from './lessons/domain-3.json'
 import lessonsD4 from './lessons/domain-4.json'
-import quizD1 from './quiz/domain-1.json'
-import quizD2 from './quiz/domain-2.json'
-import quizD3 from './quiz/domain-3.json'
-import quizD4 from './quiz/domain-4.json'
+import quizO11 from './quiz/o1-1.json'
+import quizO12 from './quiz/o1-2.json'
+import quizO21 from './quiz/o2-1.json'
+import quizO22 from './quiz/o2-2.json'
+import quizO23 from './quiz/o2-3.json'
+import quizO31 from './quiz/o3-1.json'
+import quizO32 from './quiz/o3-2.json'
+import quizO33 from './quiz/o3-3.json'
+import quizO41 from './quiz/o4-1.json'
+import quizO42 from './quiz/o4-2.json'
+import quizO43 from './quiz/o4-3.json'
+import quizO44 from './quiz/o4-4.json'
 import caseStudiesRaw from './case-studies.json'
 import labsRaw from './labs.json'
 import type {
@@ -31,10 +39,18 @@ export const lessons: LessonContent[] = [
 ] as LessonContent[]
 
 export const questions: QuizQuestion[] = [
-  ...quizD1,
-  ...quizD2,
-  ...quizD3,
-  ...quizD4,
+  ...quizO11,
+  ...quizO12,
+  ...quizO21,
+  ...quizO22,
+  ...quizO23,
+  ...quizO31,
+  ...quizO32,
+  ...quizO33,
+  ...quizO41,
+  ...quizO42,
+  ...quizO43,
+  ...quizO44,
 ] as QuizQuestion[]
 
 export const caseStudies: CaseStudy[] = caseStudiesRaw

@@ -9,6 +9,8 @@ interface QuestionCardProps {
   revealed: boolean
   questionNumber: number
   totalQuestions: number
+  /** Choices in the order to display (already shuffled by the parent). */
+  displayChoices?: string[]
 }
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F']
@@ -21,8 +23,10 @@ export default function QuestionCard({
   revealed,
   questionNumber,
   totalQuestions,
+  displayChoices,
 }: QuestionCardProps) {
   const isMultiple = question.type === 'multiple'
+  const choices = displayChoices ?? question.choices
 
   function choiceClassName(choice: string): string {
     const classes = ['choice']
@@ -70,7 +74,7 @@ export default function QuestionCard({
       <h3 style={{ marginTop: 0 }}>{renderInline(question.prompt)}</h3>
 
       <div>
-        {question.choices.map((choice, i) => (
+        {choices.map((choice, i) => (
           <button
             key={choice}
             type="button"

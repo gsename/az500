@@ -8,7 +8,7 @@ import {
   remainingSeconds,
   type ExamSessionState,
 } from '../lib/examSession'
-import { scaleScore, PASSING_SCORE } from '../lib/examBuilder'
+import { scaleScore, PASSING_SCORE, seededShuffle } from '../lib/examBuilder'
 import { applySm2Update, createInitialProgress } from '../lib/spacedRepetition'
 import { db } from '../db'
 import QuestionCard from '../components/QuestionCard'
@@ -57,6 +57,9 @@ export default function ExamSession() {
   const current = questions[index]
   const caseStudy = current?.caseStudyId ? caseStudiesById[current.caseStudyId] : null
   const currentAnswers = session.answers[current?.id] ?? []
+  // Deterministic per-question choice order, stable for the whole session
+  // (seed = question id + session start), reshuffled only on a new exam.
+  const currentChoices = current ? seededShuffle(current.choices, `${current.id}:${session.startedAt}`) : []
 
   function updateAnswers(choice: string) {
     if (!session || !current) return
@@ -165,6 +168,7 @@ export default function ExamSession() {
       {current && (
         <QuestionCard
           question={current}
+          displayChoices={currentChoices}
           caseStudy={caseStudy}
           selected={currentAnswers}
           onChange={updateAnswers}
