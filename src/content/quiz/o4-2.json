@@ -457,5 +457,79 @@
     "correctAnswers": ["Secure Score"],
     "explanation": "Secure Score is the single percentage that trends configuration/posture improvement over time.",
     "difficulty": "easy"
+  },
+  {
+    "id": "q-o4-2-31",
+    "objectiveId": "o4-2",
+    "type": "reorder",
+    "prompt": "Order the steps to get one unified compliance view across Azure, AWS, and GCP.",
+    "reorderItems": [
+      "Onboard the AWS account as a multicloud connector in Defender for Cloud",
+      "Onboard the GCP project as a multicloud connector",
+      "Review the unified Secure Score and Inventory across all three",
+      "Enable a regulatory standard (e.g. ISO 27001) across the connected environments"
+    ],
+    "explanation": "Both clouds must be connected before a unified view exists to review, with additional standards layered on afterward.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-2-32",
+    "objectiveId": "o4-2",
+    "type": "reorder",
+    "prompt": "Order the steps to discover a newly acquired subsidiary's unknown internet-facing assets before onboarding it.",
+    "reorderItems": [
+      "Run a Microsoft Defender EASM discovery scan against the subsidiary's known domains",
+      "Review the discovered inventory of internet-facing assets",
+      "Investigate any unexpected or shadow-IT assets found",
+      "Bring the subsidiary's known Azure resources into Defender for Cloud's inventory"
+    ],
+    "explanation": "External discovery comes first (outside-in), followed by investigation, then internal onboarding (inside-out) of known resources.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-2-33",
+    "objectiveId": "o4-2",
+    "type": "active-screen",
+    "prompt": "Configure this simplified Defender for Cloud environment settings screen to extend posture management to a connected AWS account.",
+    "screenTitle": "Environment settings (simulated)",
+    "fields": [
+      { "id": "connectorType", "label": "Connector type", "kind": "select", "options": ["AWS", "GCP", "On-premises"], "correctValue": "AWS" },
+      { "id": "standard", "label": "Apply Microsoft Cloud Security Benchmark", "kind": "toggle", "correctValue": "On" }
+    ],
+    "explanation": "An AWS connector onboards the AWS account, and MCSB is the default benchmark applied to assess it, just as with Azure resources.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-2-34",
+    "objectiveId": "o4-2",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o4-2",
+    "prompt": "Proposed solution: Track the number of Defender plans enabled each month. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "A count of enabled plans measures coverage, not the underlying configuration quality or its trend over time.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-2-35",
+    "objectiveId": "o4-2",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o4-2",
+    "prompt": "Proposed solution: Track Secure Score over time in Defender for Cloud. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["Yes"],
+    "explanation": "Secure Score is exactly the single percentage that trends configuration/posture improvement across connected environments.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o4-2-36",
+    "objectiveId": "o4-2",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o4-2",
+    "prompt": "Proposed solution: Track the number of EASM-discovered assets each month. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "EASM measures the size of the external attack surface, not the quality of security configuration.",
+    "difficulty": "medium"
   }
 ]

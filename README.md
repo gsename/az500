@@ -67,15 +67,25 @@ son navigateur.
 - **Domaines → objectifs** : navigation par les 4 domaines officiels
   (pondération Microsoft affichée), fiche de cours condensée par objectif
   (résumé, points clés, pièges fréquents, liens Microsoft Learn).
-- **Quiz ciblé** : ~30 questions par objectif (banque de 360 au total). Chaque
+- **Quiz ciblé** : ~36 questions par objectif (banque de 432 au total). Chaque
   session tire un sous-ensemble au hasard (10, 20, ou tout), l'ordre des
   réponses est mélangé (stable pendant la session, différent à chaque passage),
   feedback immédiat avec explication, et mise à jour de la répétition espacée
   (SM-2) à la fin. Les distracteurs sont plausibles et dans le même domaine
   pour éviter la devinette par élimination.
+- **Types de questions** : QCM simple/multiple, étude de cas, **réordonnancement**
+  (glisser-déposer, façon "build list"), **active screen** (mini-écran simulé
+  à configurer — pas une réplique du vrai portail Azure), et **solution/objectif**
+  (plusieurs solutions proposées pour un même objectif, réponse Oui/Non, **sans
+  retour en arrière possible** une fois passé à la question suivante — comme
+  dans le vrai examen). Ce mix sert à s'entraîner à la logique de chaque
+  format ; ce n'est **pas** une reconstitution fidèle de la vraie répartition,
+  que Microsoft ne publie pas.
 - **Examen blanc** : tirage pondéré selon les % officiels des 4 domaines,
-  chronométré (durée officielle de l'examen), résultat détaillé par domaine
-  avec score ramené sur 1000 (seuil de réussite 700).
+  chronométré à la durée officielle vérifiée (100 minutes — pas les 150-180 min
+  parfois citées ailleurs, qui ne correspondent à aucune source officielle
+  trouvée pour AZ-500), résultat détaillé par domaine avec score ramené sur
+  1000 (seuil de réussite 700).
 - **Répétition espacée** : algorithme SM-2 simplifié, calculé par objectif à
   partir du taux de bonnes réponses de chaque session (quiz ciblé ou tranche
   d'examen blanc concernant cet objectif).

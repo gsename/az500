@@ -452,5 +452,79 @@
     "correctAnswers": ["Use Data Collection Rules with the Azure Monitor Agent, since the Log Analytics agent is retired"],
     "explanation": "The MMA is retired; DCRs with AMA are the standard, supported collection path into the workspace.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-4-31",
+    "objectiveId": "o4-4",
+    "type": "reorder",
+    "prompt": "Order the steps to start detecting threats with Microsoft Sentinel from scratch.",
+    "reorderItems": [
+      "Onboard Sentinel onto a Log Analytics workspace",
+      "Enable data connectors for the relevant sources (e.g. Entra ID, Azure activity)",
+      "Enable analytics rule templates to detect known patterns",
+      "Create automation rules with playbooks to respond to incidents"
+    ],
+    "explanation": "The workspace and connectors must be in place before analytics rules have data to detect on, with automated response configured last.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-4-32",
+    "objectiveId": "o4-4",
+    "type": "reorder",
+    "prompt": "Order the steps to migrate VM telemetry collection off the retired Log Analytics agent.",
+    "reorderItems": [
+      "Identify VMs still reporting via the legacy Log Analytics agent (MMA)",
+      "Create a Data Collection Rule targeting the required telemetry",
+      "Ensure the Azure Monitor Agent is installed and associated on the VMs",
+      "Uninstall the legacy Log Analytics agent once AMA collection is confirmed"
+    ],
+    "explanation": "Identify the affected VMs, stand up the new DCR/AMA collection path, confirm it works, then retire the legacy agent.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-4-33",
+    "objectiveId": "o4-4",
+    "type": "active-screen",
+    "prompt": "Configure this simplified Sentinel automation screen so a Logic App runs automatically whenever a new Sentinel incident is created.",
+    "screenTitle": "Automation rule (simulated)",
+    "fields": [
+      { "id": "trigger", "label": "Automation rule trigger", "kind": "select", "options": ["When alert is created (Defender for Cloud)", "When incident is created (Sentinel)"], "correctValue": "When incident is created (Sentinel)" },
+      { "id": "action", "label": "Action", "kind": "select", "options": ["Run playbook", "Send email only"], "correctValue": "Run playbook" }
+    ],
+    "explanation": "Sentinel automation rules trigger on Sentinel incidents (not Defender for Cloud alerts directly), and the automated action is running a playbook (Logic App).",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-4-34",
+    "objectiveId": "o4-4",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o4-4",
+    "prompt": "Proposed solution: Create a Sentinel automation rule triggered by incident creation. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "Sentinel automation rules trigger on Sentinel incidents, not directly on Defender for Cloud alerts — the goal specifically excludes Sentinel incidents.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-4-35",
+    "objectiveId": "o4-4",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o4-4",
+    "prompt": "Proposed solution: Configure Defender for Cloud workflow automation, triggered by the alert, running a Logic App that opens the ticket. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["Yes"],
+    "explanation": "Workflow automation is triggered directly by Defender for Cloud alerts and runs a Logic App — exactly what the goal asks for.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o4-4-36",
+    "objectiveId": "o4-4",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o4-4",
+    "prompt": "Proposed solution: Create a Data Collection Rule that forwards alerts to a ticketing system. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "DCRs configure telemetry collection into a workspace — they do not trigger actions in response to alerts.",
+    "difficulty": "medium"
   }
 ]

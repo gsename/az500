@@ -420,5 +420,80 @@
     "correctAnswers": ["Add a scoped WAF exclusion/custom rule for that request shape"],
     "explanation": "A narrow exclusion or custom rule resolves the false positive while keeping OWASP protection active for all other traffic.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-3-31",
+    "objectiveId": "o2-3",
+    "type": "reorder",
+    "prompt": "Order the steps to safely put a WAF into active blocking in front of a regional web app.",
+    "reorderItems": [
+      "Create an Application Gateway (WAF v2 SKU) fronting the app",
+      "Create a WAF policy with the OWASP Core Rule Set",
+      "Set the WAF policy mode to Detection and review the logs",
+      "Switch the WAF policy mode to Prevention"
+    ],
+    "explanation": "The gateway and policy must exist before tuning; piloting in Detection before switching to Prevention avoids blocking legitimate traffic unexpectedly.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-3-32",
+    "objectiveId": "o2-3",
+    "type": "reorder",
+    "prompt": "Order the steps to protect a set of critical public IPs with DDoS Network Protection.",
+    "reorderItems": [
+      "Create a DDoS protection plan",
+      "Associate the protection plan with the virtual network containing the public IPs",
+      "Enable DDoS Network Protection on that virtual network",
+      "Review DDoS telemetry and configure alerting"
+    ],
+    "explanation": "The plan must exist and be linked to the VNet before protection is active, with monitoring configured last.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-3-33",
+    "objectiveId": "o2-3",
+    "type": "active-screen",
+    "prompt": "Configure this simplified WAF policy screen for a global public API needing OWASP protection, attached to Front Door.",
+    "screenTitle": "WAF policy (simulated)",
+    "fields": [
+      { "id": "mode", "label": "WAF policy mode", "kind": "select", "options": ["Detection", "Prevention"], "correctValue": "Prevention" },
+      { "id": "ruleset", "label": "Managed rule set", "kind": "select", "options": ["None", "OWASP Core Rule Set"], "correctValue": "OWASP Core Rule Set" },
+      { "id": "attach", "label": "Attached to", "kind": "select", "options": ["Azure Firewall", "Front Door"], "correctValue": "Front Door" }
+    ],
+    "explanation": "Prevention actively blocks, the OWASP Core Rule Set provides baseline coverage, and a WAF attaches to Front Door (or Application Gateway) — not Azure Firewall.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-3-34",
+    "objectiveId": "o2-3",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o2-3",
+    "prompt": "Proposed solution: Front Door with a WAF policy in Prevention mode using the OWASP Core Rule Set. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["Yes"],
+    "explanation": "Front Door delivers global low-latency reach, and the attached WAF in Prevention mode blocks SQL injection/XSS — both goal requirements are met.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-3-35",
+    "objectiveId": "o2-3",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o2-3",
+    "prompt": "Proposed solution: Azure Firewall with application rules only, no Front Door. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "Azure Firewall filters general network traffic; it provides neither OWASP web-attack protection nor global CDN-backed low-latency reach.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-3-36",
+    "objectiveId": "o2-3",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o2-3",
+    "prompt": "Proposed solution: Application Gateway alone, in a single region, without Front Door or a WAF. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "Without a WAF there's no OWASP protection, and a single regional Application Gateway does not provide global low-latency reach.",
+    "difficulty": "medium"
   }
 ]

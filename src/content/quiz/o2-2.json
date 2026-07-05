@@ -447,5 +447,80 @@
     "correctAnswers": ["Point on-premises DNS (conditional forwarding) at the Azure Private DNS zone for the storage endpoint"],
     "explanation": "On-premises resolvers must forward the storage FQDN to the Azure Private DNS zone so it resolves to the private endpoint IP.",
     "difficulty": "hard"
+  },
+  {
+    "id": "q-o2-2-31",
+    "objectiveId": "o2-2",
+    "type": "reorder",
+    "prompt": "Order the steps to give a storage account a private endpoint with no public exposure.",
+    "reorderItems": [
+      "Create a private endpoint targeting the storage account's 'blob' sub-resource",
+      "Integrate the endpoint with a Private DNS zone",
+      "Verify the storage account's hostname resolves to the private IP from within the VNet",
+      "Set Public network access to Disabled"
+    ],
+    "explanation": "The endpoint and DNS integration must exist and be verified before it's safe to cut off public access entirely.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-32",
+    "objectiveId": "o2-2",
+    "type": "reorder",
+    "prompt": "Order the steps to let an App Service reach an on-premises database over a site-to-site VPN while keeping its public inbound endpoint.",
+    "reorderItems": [
+      "Establish a site-to-site VPN connecting the VNet to on-premises",
+      "Enable VNet integration on the App Service, pointing to that VNet",
+      "Confirm outbound calls from the app reach the on-premises database",
+      "Leave the app's default public inbound endpoint unchanged"
+    ],
+    "explanation": "The VPN must exist before VNet integration can use it, and verification follows; the public endpoint is simply left as-is throughout.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-33",
+    "objectiveId": "o2-2",
+    "type": "active-screen",
+    "prompt": "Configure this simplified private endpoint screen for a Key Vault that must have zero public exposure.",
+    "screenTitle": "Create private endpoint (simulated)",
+    "fields": [
+      { "id": "subResource", "label": "Target sub-resource", "kind": "select", "options": ["vault", "blob", "sqlServer"], "correctValue": "vault" },
+      { "id": "dns", "label": "Integrate with private DNS zone", "kind": "toggle", "correctValue": "On" },
+      { "id": "publicAccess", "label": "Public network access", "kind": "select", "options": ["Enabled", "Disabled"], "correctValue": "Disabled" }
+    ],
+    "explanation": "Key Vault's private endpoint sub-resource is 'vault'; DNS integration lets clients resolve the private IP; disabling public access removes exposure entirely.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-34",
+    "objectiveId": "o2-2",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o2-2",
+    "prompt": "Proposed solution: Rely on SQL Managed Instance's default deployment into a delegated subnet secured with NSGs, with ExpressRoute private peering to on-premises. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["Yes"],
+    "explanation": "SQL MI is never placed on a public multi-tenant network — its delegated-subnet deployment plus ExpressRoute private peering satisfies both reachability and no public exposure.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-35",
+    "objectiveId": "o2-2",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o2-2",
+    "prompt": "Proposed solution: Enable a public endpoint on the SQL Managed Instance and restrict it with a firewall rule allowing only the on-premises public IP. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "This still exposes a public endpoint to the internet, even if restricted by IP — it does not meet 'never exposed to the public internet'.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-2-36",
+    "objectiveId": "o2-2",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o2-2",
+    "prompt": "Proposed solution: Configure a service endpoint for SQL on the on-premises router. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "Service endpoints extend a VNet's identity to a service over the Azure backbone — they don't apply to on-premises routers, so this misapplies the concept entirely.",
+    "difficulty": "medium"
   }
 ]

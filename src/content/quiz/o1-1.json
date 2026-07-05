@@ -414,5 +414,83 @@
     "correctAnswers": ["PIM audit logs and access reviews"],
     "explanation": "PIM records every activation, approval, and assignment change in its audit logs and supports periodic access reviews — purpose-built for privileged-access accountability.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-31",
+    "objectiveId": "o1-1",
+    "type": "reorder",
+    "prompt": "Order the steps to activate a PIM-eligible Azure resource role, from the administrator's perspective.",
+    "reorderItems": [
+      "Sign in to the Entra admin center",
+      "Go to Privileged Identity Management ▸ Azure resources ▸ My roles",
+      "Select 'Activate' next to the eligible role",
+      "Complete the required MFA, justification, and/or approval prompts",
+      "Use the role during the active, time-bound window"
+    ],
+    "explanation": "PIM activation follows this order: reach My roles, trigger Activate, satisfy the configured gates (MFA/justification/approval), then use the resulting time-bound active assignment.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-32",
+    "objectiveId": "o1-1",
+    "type": "reorder",
+    "prompt": "Order the steps to configure and safely roll out a Conditional Access policy requiring MFA for the Azure management plane.",
+    "reorderItems": [
+      "Browse to Conditional Access ▸ Policies ▸ New policy",
+      "Assign the target users/groups, excluding break-glass accounts",
+      "Under Target resources, select Windows Azure Service Management API",
+      "Under Grant, select Require multifactor authentication",
+      "Enable the policy in Report-only mode and review sign-in logs",
+      "Switch the policy from Report-only to On"
+    ],
+    "explanation": "Configure the assignment and grant controls first, pilot with Report-only, then enforce — this order avoids locking anyone out.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-33",
+    "objectiveId": "o1-1",
+    "type": "active-screen",
+    "prompt": "Configure this simplified role-assignment screen so a contractor group can view resources in a resource group but cannot modify them or grant access to others.",
+    "screenTitle": "Add role assignment (simulated)",
+    "fields": [
+      { "id": "role", "label": "Role", "kind": "select", "options": ["Owner", "Contributor", "Reader", "User Access Administrator"], "correctValue": "Reader" },
+      { "id": "scope", "label": "Scope", "kind": "select", "options": ["Management group", "Subscription", "Resource group", "Resource"], "correctValue": "Resource group" },
+      { "id": "assignAccess", "label": "Can assign access to others", "kind": "toggle", "correctValue": "Off" }
+    ],
+    "explanation": "Reader satisfies view-only with no modification or access-granting rights, scoped narrowly to the resource group — least privilege for the stated need.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-34",
+    "objectiveId": "o1-1",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o1-1",
+    "prompt": "Proposed solution: Assign every administrator the Contributor role directly at the subscription, and require MFA at every sign-in. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "This leaves a standing, permanent Contributor assignment with no approval gate or 4-hour limit — it does not meet the just-in-time requirement.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-35",
+    "objectiveId": "o1-1",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o1-1",
+    "prompt": "Proposed solution: Make every administrator eligible for the required Azure roles via Privileged Identity Management, requiring MFA and approval at activation, with a 4-hour maximum activation duration. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["Yes"],
+    "explanation": "PIM eligibility with MFA, approval, and a 4-hour cap directly satisfies every part of the stated goal, including the audit trail PIM records automatically.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-36",
+    "objectiveId": "o1-1",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o1-1",
+    "prompt": "Proposed solution: Create a Conditional Access policy requiring MFA for the Azure management plane, and grant every administrator the Contributor role permanently. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "MFA on sign-in doesn't address the requirement for no standing privileged access, approval, or a 4-hour limit — the Contributor grant remains permanent.",
+    "difficulty": "medium"
   }
 ]

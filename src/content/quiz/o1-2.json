@@ -435,5 +435,81 @@
     "correctAnswers": ["Restrict user consent and enable the admin consent workflow"],
     "explanation": "Restricting user consent stops arbitrary approvals; the admin consent workflow routes genuine needs to administrators instead of blocking them outright.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-31",
+    "objectiveId": "o1-2",
+    "type": "reorder",
+    "prompt": "Order the steps to give an Azure Function a credential-free way to read a Key Vault secret.",
+    "reorderItems": [
+      "Enable a system-assigned managed identity on the Function app",
+      "Note the managed identity's object ID",
+      "Assign it the Key Vault Secrets User role scoped to the Key Vault",
+      "Reference the secret from application code via the Key Vault SDK/reference, with no credential in code"
+    ],
+    "explanation": "The identity must exist before it can be granted a role, and the role must be assigned before code can successfully read the secret.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-32",
+    "objectiveId": "o1-2",
+    "type": "reorder",
+    "prompt": "Order the steps to register an application and let it call Microsoft Graph as a daemon with admin-consented application permissions.",
+    "reorderItems": [
+      "Create a new app registration",
+      "Add the required application permission under API permissions",
+      "Have an administrator grant admin consent for the tenant",
+      "Generate a client secret or certificate for the app",
+      "Use the client credentials flow to obtain a token"
+    ],
+    "explanation": "Permissions must be requested and consented before the app can successfully use its credential to obtain a token via client credentials.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-33",
+    "objectiveId": "o1-2",
+    "type": "active-screen",
+    "prompt": "Configure this simplified API permissions screen for a daemon service (no signed-in user) that must read all users' profiles via Microsoft Graph.",
+    "screenTitle": "API permissions (simulated)",
+    "fields": [
+      { "id": "permType", "label": "Permission type", "kind": "select", "options": ["Delegated permissions", "Application permissions"], "correctValue": "Application permissions" },
+      { "id": "scope", "label": "Permission", "kind": "select", "options": ["User.Read", "User.Read.All", "Mail.Send"], "correctValue": "User.Read.All" },
+      { "id": "consent", "label": "Admin consent granted", "kind": "toggle", "correctValue": "On" }
+    ],
+    "explanation": "No user is signed in, so application permissions are required, reading all users needs User.Read.All, and application permissions always need admin consent.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-34",
+    "objectiveId": "o1-2",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o1-2",
+    "prompt": "Proposed solution: Create a service principal with a client secret and store the secret in an environment variable on the VM. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "A secret is still stored on the VM (in an environment variable), which the goal explicitly forbids.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-35",
+    "objectiveId": "o1-2",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o1-2",
+    "prompt": "Proposed solution: Enable a system-assigned managed identity on the VM and grant it a Key Vault Secrets User role. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["Yes"],
+    "explanation": "The managed identity requires no stored credential on the VM or in code, and the data role authorizes exactly the needed access.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-36",
+    "objectiveId": "o1-2",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o1-2",
+    "prompt": "Proposed solution: Generate a long-lived SAS-style token for the Key Vault and embed it in the job's configuration file. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "This is still a stored, long-lived credential in configuration — Key Vault authorization doesn't work this way, and it fails the 'no stored credential' requirement either way.",
+    "difficulty": "medium"
   }
 ]

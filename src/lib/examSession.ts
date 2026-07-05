@@ -1,3 +1,5 @@
+import type { QuestionResponse } from '../types'
+
 export const DEFAULT_EXAM_QUESTION_COUNT = 55
 const STORAGE_KEY = 'az500-exam-session'
 
@@ -5,7 +7,13 @@ export interface ExamSessionState {
   questionIds: string[]
   startedAt: string
   durationMinutes: number
-  answers: Record<string, string[]>
+  answers: Record<string, QuestionResponse>
+  /**
+   * IDs of 'solution-goal' questions the learner has already moved past.
+   * Mirrors the real exam behavior: once you leave this question type you
+   * cannot return to change (or even revisit) the answer.
+   */
+  lockedQuestionIds: string[]
 }
 
 export function saveExamSession(session: ExamSessionState) {

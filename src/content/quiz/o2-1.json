@@ -432,5 +432,81 @@
     "correctAnswers": ["Next hop"],
     "explanation": "Next hop reports the effective route for the VM's traffic, directly showing whether the UDR is sending it to the firewall's private IP.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-31",
+    "objectiveId": "o2-1",
+    "type": "reorder",
+    "prompt": "Order the steps to force all egress from a subnet through Azure Firewall.",
+    "reorderItems": [
+      "Deploy Azure Firewall into the hub VNet",
+      "Create a route table with a 0.0.0.0/0 route, next hop = the firewall's private IP",
+      "Associate the route table with the workload subnet",
+      "Verify with Network Watcher's Next hop tool that traffic routes to the firewall"
+    ],
+    "explanation": "The firewall must exist before a route can target it, and the route table must be built before it's associated with the subnet, with verification last.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-32",
+    "objectiveId": "o2-1",
+    "type": "reorder",
+    "prompt": "Order the steps to enforce an Azure Virtual Network Manager security admin rule across multiple VNets.",
+    "reorderItems": [
+      "Create a network group and add the target VNets as members",
+      "Create a security admin configuration",
+      "Define a security admin rule inside that configuration",
+      "Deploy the configuration to the network group's regions"
+    ],
+    "explanation": "The group must exist first, then the configuration and its rule are authored, and finally deployed to take effect.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-33",
+    "objectiveId": "o2-1",
+    "type": "active-screen",
+    "prompt": "Configure this simplified NSG rule so it allows HTTPS inbound only from the 'web' Application Security Group.",
+    "screenTitle": "Add inbound security rule (simulated)",
+    "fields": [
+      { "id": "priority", "label": "Priority", "kind": "select", "options": ["100", "4096"], "correctValue": "100" },
+      { "id": "source", "label": "Source", "kind": "select", "options": ["Any", "IP Addresses", "Application Security Group"], "correctValue": "Application Security Group" },
+      { "id": "port", "label": "Destination port", "kind": "select", "options": ["22", "443", "3389"], "correctValue": "443" },
+      { "id": "action", "label": "Action", "kind": "select", "options": ["Allow", "Deny"], "correctValue": "Allow" }
+    ],
+    "explanation": "A low priority number ensures this custom rule is evaluated before the default deny; ASG as source targets the 'web' role directly; 443 is HTTPS; Allow permits the traffic.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-34",
+    "objectiveId": "o2-1",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o2-1",
+    "prompt": "Proposed solution: Add a deny rule for the malicious IP range to the NSG of every subnet in every VNet. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "This blocks the traffic but requires editing every NSG individually — it is not centrally enforced as required.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-35",
+    "objectiveId": "o2-1",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o2-1",
+    "prompt": "Proposed solution: Create an Azure Virtual Network Manager security admin rule denying that IP range, applied to a network group containing all VNets. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["Yes"],
+    "explanation": "A single security admin rule applied to a network group spanning all VNets enforces the block centrally, ahead of any NSG, with no per-VNet edits.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-36",
+    "objectiveId": "o2-1",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o2-1",
+    "prompt": "Proposed solution: Add a UDR in each VNet routing that IP range to a black-hole next hop. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "UDRs are per-VNet and control outbound routing, not centralized inbound blocking — this still requires per-VNet configuration.",
+    "difficulty": "medium"
   }
 ]

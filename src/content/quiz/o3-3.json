@@ -460,5 +460,80 @@
     "correctAnswers": ["Microsoft Entra authentication (with an Entra admin/groups), optionally enforcing Entra-only auth"],
     "explanation": "Entra authentication moves SQL access onto corporate identities/groups; Entra-only enforcement can then retire SQL logins.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-31",
+    "objectiveId": "o3-3",
+    "type": "reorder",
+    "prompt": "Order the steps to enforce Microsoft Entra-only authentication on an Azure SQL server.",
+    "reorderItems": [
+      "Set a Microsoft Entra admin for the SQL server",
+      "Confirm all applications have migrated off SQL logins",
+      "Enable 'Support only Microsoft Entra authentication'",
+      "Verify SQL logins can no longer authenticate"
+    ],
+    "explanation": "An Entra admin must exist and apps must be migrated before disabling SQL logins, to avoid locking out administration or breaking apps.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-32",
+    "objectiveId": "o3-3",
+    "type": "reorder",
+    "prompt": "Order the steps to protect a national-ID column so even DBAs cannot see it in plaintext.",
+    "reorderItems": [
+      "Identify the sensitive column",
+      "Configure Always Encrypted for that column with a client-side key",
+      "Store the column encryption key in Key Vault",
+      "Update client applications to use an Always Encrypted-enabled driver"
+    ],
+    "explanation": "The column and its key must be defined before applications can be updated to use the encrypted-aware driver.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-33",
+    "objectiveId": "o3-3",
+    "type": "active-screen",
+    "prompt": "Configure this simplified Azure SQL security screen for a table with card numbers, where a support team must query it without seeing card numbers, and compliance needs an audit trail.",
+    "screenTitle": "Azure SQL security (simulated)",
+    "fields": [
+      { "id": "masking", "label": "Dynamic data masking on CardNumber", "kind": "toggle", "correctValue": "On" },
+      { "id": "tde", "label": "Transparent Data Encryption", "kind": "toggle", "correctValue": "On" },
+      { "id": "auditing", "label": "Auditing", "kind": "select", "options": ["Disabled", "Enabled, to Log Analytics"], "correctValue": "Enabled, to Log Analytics" }
+    ],
+    "explanation": "Masking hides card numbers from the support team's results, TDE remains on for at-rest protection, and auditing provides the compliance trail.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-34",
+    "objectiveId": "o3-3",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o3-3",
+    "prompt": "Proposed solution: Enable database auditing sending events to a Log Analytics workspace. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["Yes"],
+    "explanation": "Auditing records logins and queries to a queryable destination, exactly the compliance trail requested.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-35",
+    "objectiveId": "o3-3",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o3-3",
+    "prompt": "Proposed solution: Enable dynamic data masking on all sensitive columns. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "Masking hides values in results; it does not record who queried what or when, so it produces no audit trail.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-36",
+    "objectiveId": "o3-3",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o3-3",
+    "prompt": "Proposed solution: Enable Transparent Data Encryption. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "TDE protects data at rest; it does not log access or queries, so it cannot provide an audit trail.",
+    "difficulty": "medium"
   }
 ]

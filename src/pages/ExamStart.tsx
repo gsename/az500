@@ -13,6 +13,7 @@ export default function ExamStart() {
       startedAt: new Date().toISOString(),
       durationMinutes: examMeta.durationMinutes,
       answers: {},
+      lockedQuestionIds: [],
     })
     navigate('/exam/session')
   }
@@ -43,7 +44,13 @@ export default function ExamStart() {
         </div>
         <p className="muted">
           Le chronomètre ne s'arrête pas une fois lancé. Tu peux naviguer entre les questions et changer tes réponses
-          avant de terminer.
+          avant de terminer — sauf pour les questions de type « solution proposée / objectif atteint ? », où, comme
+          dans le vrai examen, tu ne peux plus revenir en arrière une fois passé à la question suivante.
+        </p>
+        <p className="muted">
+          Mix de formats pour t'entraîner à leur logique (QCM simple/multiple, étude de cas, réordonnancement,
+          active screen, séquences solution/objectif) — <strong>pas une reconstitution fidèle</strong> de la vraie
+          répartition, que Microsoft ne publie pas.
         </p>
         <button className="btn" onClick={start}>
           ▶ Commencer l'examen

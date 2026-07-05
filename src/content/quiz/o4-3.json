@@ -460,5 +460,80 @@
     "correctAnswers": ["Enable Defender for Databases and Defender for Storage separately"],
     "explanation": "Each CWP plan is a separate toggle; databases and storage each need their own Defender plan enabled.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-3-31",
+    "objectiveId": "o4-3",
+    "type": "reorder",
+    "prompt": "Order the steps to enable agentless vulnerability scanning for a fleet of Azure VMs.",
+    "reorderItems": [
+      "Enable the Microsoft Defender for Servers plan on the subscription",
+      "Turn on agentless scanning in the plan's settings",
+      "Wait for (or trigger) a scan cycle",
+      "Review vulnerability findings in Defender Vulnerability Management"
+    ],
+    "explanation": "The plan must be enabled and scanning turned on before a scan can run and findings can be reviewed.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-3-32",
+    "objectiveId": "o4-3",
+    "type": "reorder",
+    "prompt": "Order the steps to catch a hardcoded secret before it reaches production.",
+    "reorderItems": [
+      "Connect the GitHub repository to Defender for Cloud DevOps Security",
+      "A developer opens a pull request containing a hardcoded secret",
+      "DevOps Security flags the secret in the pull request",
+      "The developer removes the secret before merge"
+    ],
+    "explanation": "The connector must exist before it can scan a pull request, flagging the issue before the fix and merge.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-3-33",
+    "objectiveId": "o4-3",
+    "type": "active-screen",
+    "prompt": "Configure this simplified Defender plans screen to get EDR and vulnerability management on VMs, and malware detection on storage accounts.",
+    "screenTitle": "Defender plans (simulated)",
+    "fields": [
+      { "id": "serversPlan", "label": "Microsoft Defender for Servers", "kind": "toggle", "correctValue": "On" },
+      { "id": "storagePlan", "label": "Microsoft Defender for Storage", "kind": "toggle", "correctValue": "On" },
+      { "id": "agentless", "label": "Agentless scanning", "kind": "toggle", "correctValue": "On" }
+    ],
+    "explanation": "Defender for Servers brings EDR and vulnerability management to VMs (with agentless scanning as the collection mechanism), while Defender for Storage is the separate plan needed for storage-account threat detection.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-3-34",
+    "objectiveId": "o4-3",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o4-3",
+    "prompt": "Proposed solution: Enable Microsoft Defender for Storage on the subscription. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["Yes"],
+    "explanation": "Defender for Storage detects malware uploads and suspicious access on storage accounts, with no agent required.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o4-3-35",
+    "objectiveId": "o4-3",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o4-3",
+    "prompt": "Proposed solution: Enable Microsoft Defender for Servers to protect the storage account's underlying infrastructure. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "Defender for Servers targets VMs, not storage accounts — it is the wrong plan for this resource type.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-3-36",
+    "objectiveId": "o4-3",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o4-3",
+    "prompt": "Proposed solution: Install an antivirus agent inside every application that writes to the storage account. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "This requires deploying agents (violating the 'no additional agent' requirement) and would miss upload paths that don't go through those applications.",
+    "difficulty": "medium"
   }
 ]

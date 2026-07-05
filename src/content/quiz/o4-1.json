@@ -435,5 +435,80 @@
     "correctAnswers": ["Microsoft Defender for Cloud asset inventory (queryable via Azure Resource Graph)"],
     "explanation": "Defender for Cloud's inventory (backed by Azure Resource Graph) gives a unified, queryable view across Azure/AWS/GCP.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-1-31",
+    "objectiveId": "o4-1",
+    "type": "reorder",
+    "prompt": "Order the steps to enforce, tenant-wide, that no new storage account can be created with public blob access.",
+    "reorderItems": [
+      "Create (or find) an Azure Policy definition targeting that configuration property",
+      "Set the policy effect to Deny",
+      "Assign the policy (or an initiative containing it) at the management group or subscription scope",
+      "Verify that a non-compliant creation attempt is blocked"
+    ],
+    "explanation": "The definition and its effect must exist before assignment, with verification confirming enforcement.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-1-32",
+    "objectiveId": "o4-1",
+    "type": "reorder",
+    "prompt": "Order the steps to stand up a new Key Vault with a centrally governed access model and network restriction.",
+    "reorderItems": [
+      "Create the Key Vault with the Azure RBAC access model",
+      "Restrict Networking to selected virtual network subnets or a private endpoint",
+      "Assign an Azure RBAC data role (e.g. Key Vault Secrets User) to the workload's identity",
+      "Enable purge protection"
+    ],
+    "explanation": "The vault and its network boundary come first, then data-plane access is granted, with purge protection hardening it last.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-1-33",
+    "objectiveId": "o4-1",
+    "type": "active-screen",
+    "prompt": "Configure this simplified Azure Backup vault screen for the maximum protection posture against a compromised admin account.",
+    "screenTitle": "Backup vault security (simulated)",
+    "fields": [
+      { "id": "immutability", "label": "Immutability", "kind": "select", "options": ["Disabled", "Enabled", "Enabled and Locked"], "correctValue": "Enabled and Locked" },
+      { "id": "mua", "label": "Multi-User Authorization", "kind": "toggle", "correctValue": "On" },
+      { "id": "softDelete", "label": "Soft delete", "kind": "select", "options": ["Off", "On (default)", "Always-on (irreversible)"], "correctValue": "Always-on (irreversible)" }
+    ],
+    "explanation": "Locked immutability plus always-on soft delete plus MUA is Microsoft's maximum posture, combining an irreversible retention control with a second-approver requirement.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o4-1-34",
+    "objectiveId": "o4-1",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o4-1",
+    "prompt": "Proposed solution: Publish an internal wiki page asking teams to always add the BusinessCriticality tag. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "This relies on manual discipline with no enforcement — exactly what the goal says to avoid.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "q-o4-1-35",
+    "objectiveId": "o4-1",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o4-1",
+    "prompt": "Proposed solution: Assign an Azure Policy with a Deny effect that blocks creation of untagged resources. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["Yes"],
+    "explanation": "Deny automatically blocks non-compliant (untagged) creation, enforcing the tag without relying on manual discipline.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-1-36",
+    "objectiveId": "o4-1",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o4-1",
+    "prompt": "Proposed solution: Create an Azure Policy with an Audit effect that reports untagged resources monthly. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "Audit only reports non-compliance after the fact; it does not prevent untagged resources from being created.",
+    "difficulty": "medium"
   }
 ]

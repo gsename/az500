@@ -26,20 +26,56 @@ export interface LessonContent {
   diagrams?: string[]
 }
 
-export type QuestionType = 'single' | 'multiple' | 'case-study'
+export type QuestionType =
+  | 'single'
+  | 'multiple'
+  | 'case-study'
+  | 'solution-goal'
+  | 'reorder'
+  | 'active-screen'
 export type Difficulty = 'easy' | 'medium' | 'hard'
+
+export interface ActiveScreenField {
+  id: string
+  label: string
+  kind: 'toggle' | 'select'
+  /** Required for kind 'select'. */
+  options?: string[]
+  /** For 'toggle': 'On' or 'Off'. For 'select': the correct option text. */
+  correctValue: string
+}
 
 export interface QuizQuestion {
   id: string
   objectiveId: string
   type: QuestionType
   prompt: string
-  choices: string[]
-  correctAnswers: string[]
   explanation: string
   difficulty: Difficulty
   caseStudyId?: string
+
+  // single / multiple / case-study / solution-goal (unused by reorder / active-screen)
+  choices?: string[]
+  correctAnswers?: string[]
+
+  // reorder only: items listed here in the CORRECT order; the UI shuffles
+  // them for display and grades by comparing the arranged order to this list.
+  reorderItems?: string[]
+
+  // active-screen only: a mock, declarative "portal screen" made of fields.
+  screenTitle?: string
+  fields?: ActiveScreenField[]
 }
+
+/**
+ * The shape of a learner's answer, discriminated to match how each question
+ * type is graded. Choice-based types (single/multiple/case-study/
+ * solution-goal) share the 'choices' response.
+ */
+export type QuestionResponse =
+  | { kind: 'choices'; selected: string[] }
+  | { kind: 'order'; order: string[] }
+  | { kind: 'fields'; values: Record<string, string> }
 
 export interface CaseStudy {
   id: string

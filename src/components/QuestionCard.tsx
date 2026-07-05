@@ -26,7 +26,8 @@ export default function QuestionCard({
   displayChoices,
 }: QuestionCardProps) {
   const isMultiple = question.type === 'multiple'
-  const choices = displayChoices ?? question.choices
+  const choices = displayChoices ?? question.choices ?? []
+  const correctAnswers = question.correctAnswers ?? []
 
   function choiceClassName(choice: string): string {
     const classes = ['choice']
@@ -35,7 +36,7 @@ export default function QuestionCard({
       if (isSelected) classes.push('selected')
       return classes.join(' ')
     }
-    const isCorrect = question.correctAnswers.includes(choice)
+    const isCorrect = correctAnswers.includes(choice)
     if (isCorrect) classes.push('correct')
     else if (isSelected) classes.push('incorrect')
     return classes.join(' ')
@@ -43,7 +44,7 @@ export default function QuestionCard({
 
   function markerContent(choice: string, letter: string): string {
     if (!revealed) return selected.includes(choice) ? (isMultiple ? '✓' : letter) : letter
-    const isCorrect = question.correctAnswers.includes(choice)
+    const isCorrect = correctAnswers.includes(choice)
     if (isCorrect) return '✓'
     if (selected.includes(choice)) return '✕'
     return letter
@@ -60,7 +61,7 @@ export default function QuestionCard({
           Question {questionNumber} / {totalQuestions}
         </span>
         <span className={`badge ${question.difficulty}`}>{question.difficulty}</span>
-        {isMultiple && <span className="chip warn">Choisir {question.correctAnswers.length}</span>}
+        {isMultiple && <span className="chip warn">Choisir {correctAnswers.length}</span>}
       </div>
 
       {caseStudy && (

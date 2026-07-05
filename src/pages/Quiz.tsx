@@ -2,22 +2,35 @@ import { useMemo, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { objectivesById, questionsByObjective, caseStudiesById } from '../content'
 import { shuffle, seededShuffle } from '../lib/examBuilder'
+import { emptyResponse, hasAnswer, isQuestionCorrect } from '../lib/grading'
 import { applySm2Update, createInitialProgress } from '../lib/spacedRepetition'
 import { db } from '../db'
-import QuestionCard from '../components/QuestionCard'
-import type { QuizQuestion } from '../types'
+import QuestionRenderer from '../components/QuestionRenderer'
+import type { QuestionResponse, QuizQuestion } from '../types'
 
 const DEFAULT_QUIZ_SIZE = 20
 
 interface PreparedQuestion {
   question: QuizQuestion
-  choices: string[]
+  displayChoices?: string[]
+  initialOrder?: string[]
 }
 
-function isCorrect(question: QuizQuestion, selected: string[]): boolean {
-  if (selected.length !== question.correctAnswers.length) return false
-  const correctSet = new Set(question.correctAnswers)
-  return selected.every((choice) => correctSet.has(choice))
+function prepareQuestion(question: QuizQuestion, salt: string): PreparedQuestion {
+  if (question.type === 'reorder') {
+    return { question, initialOrder: shuffle(question.reorderItems ?? []) }
+  }
+  if (question.type === 'active-screen') {
+    return { question }
+  }
+  return { question, displayChoices: seededShuffle(question.choices ?? [], `${question.id}:${salt}`) }
+}
+
+function initialResponseFor(prepared: PreparedQuestion): QuestionResponse {
+  if (prepared.question.type === 'reorder') {
+    return { kind: 'order', order: prepared.initialOrder ?? [] }
+  }
+  return emptyResponse(prepared.question)
 }
 
 export default function Quiz() {
@@ -30,21 +43,18 @@ export default function Quiz() {
   const size = Number.isFinite(requested) && requested > 0 ? requested : DEFAULT_QUIZ_SIZE
   const targetSize = Math.min(size, pool.length)
 
-  // A salt fixed for the session: keeps question selection AND choice order
+  // A salt fixed for the session: keeps question selection AND choice/order
   // stable across re-renders, but changes on restart for a fresh draw.
   const [salt, setSalt] = useState(() => Math.random().toString(36).slice(2))
 
   const prepared: PreparedQuestion[] = useMemo(() => {
     const picked = shuffle(pool).slice(0, targetSize)
-    return picked.map((question) => ({
-      question,
-      choices: seededShuffle(question.choices, `${question.id}:${salt}`),
-    }))
+    return picked.map((q) => prepareQuestion(q, salt))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [objectiveId, salt, targetSize])
 
   const [index, setIndex] = useState(0)
-  const [selected, setSelected] = useState<string[]>([])
+  const [response, setResponse] = useState<QuestionResponse>(() => (prepared[0] ? initialResponseFor(prepared[0]) : { kind: 'choices', selected: [] }))
   const [revealed, setRevealed] = useState(false)
   const [correctCount, setCorrectCount] = useState(0)
   const [finished, setFinished] = useState(false)
@@ -58,15 +68,33 @@ export default function Quiz() {
 
   function toggleChoice(choice: string) {
     if (revealed) return
-    if (current.question.type === 'multiple') {
-      setSelected((prev) => (prev.includes(choice) ? prev.filter((c) => c !== choice) : [...prev, choice]))
-    } else {
-      setSelected([choice])
-    }
+    setResponse((prev) => {
+      if (prev.kind !== 'choices') return prev
+      if (current.question.type === 'multiple') {
+        const selected = prev.selected.includes(choice)
+          ? prev.selected.filter((c) => c !== choice)
+          : [...prev.selected, choice]
+        return { kind: 'choices', selected }
+      }
+      return { kind: 'choices', selected: [choice] }
+    })
+  }
+
+  function reorder(order: string[]) {
+    if (revealed) return
+    setResponse({ kind: 'order', order })
+  }
+
+  function setField(fieldId: string, value: string) {
+    if (revealed) return
+    setResponse((prev) => {
+      const values = prev.kind === 'fields' ? prev.values : {}
+      return { kind: 'fields', values: { ...values, [fieldId]: value } }
+    })
   }
 
   async function handleValidate() {
-    const correct = isCorrect(current.question, selected)
+    const correct = isQuestionCorrect(current.question, response)
     if (correct) setCorrectCount((c) => c + 1)
     setRevealed(true)
     await db.quizAttempts.add({
@@ -80,8 +108,9 @@ export default function Quiz() {
 
   async function handleNext() {
     if (index + 1 < prepared.length) {
-      setIndex((i) => i + 1)
-      setSelected([])
+      const nextIndex = index + 1
+      setIndex(nextIndex)
+      setResponse(initialResponseFor(prepared[nextIndex]))
       setRevealed(false)
     } else {
       setFinished(true)
@@ -101,7 +130,6 @@ export default function Quiz() {
   function restart() {
     setSalt(Math.random().toString(36).slice(2))
     setIndex(0)
-    setSelected([])
     setRevealed(false)
     setCorrectCount(0)
     setFinished(false)
@@ -149,18 +177,20 @@ export default function Quiz() {
       <div className="breadcrumb">
         <Link to={`/objectives/${objective.id}`}>← {objective.title}</Link>
       </div>
-      <QuestionCard
+      <QuestionRenderer
         question={current.question}
-        displayChoices={current.choices}
         caseStudy={caseStudy}
-        selected={selected}
-        onChange={toggleChoice}
+        response={response}
+        displayChoices={current.displayChoices}
+        onToggleChoice={toggleChoice}
+        onReorder={reorder}
+        onSetField={setField}
         revealed={revealed}
         questionNumber={index + 1}
         totalQuestions={prepared.length}
       />
       {!revealed ? (
-        <button className="btn" disabled={selected.length === 0} onClick={handleValidate}>
+        <button className="btn" disabled={!hasAnswer(response)} onClick={handleValidate}>
           Valider
         </button>
       ) : (

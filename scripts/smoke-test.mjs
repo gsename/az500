@@ -72,24 +72,76 @@ await shot('04b-objective-dark')
 await page.click('.theme-toggle')
 await page.waitForTimeout(200)
 
-// 5. Targeted quiz flow
-await page.click('text=Tout réviser')
-await page.waitForSelector('.choice', { timeout: 10000 })
-for (let i = 0; i < 3; i++) {
-  await page.waitForSelector('.choice', { timeout: 10000 })
-  await page.locator('.choice').first().click()
-  const validateBtn = page.locator('button:has-text("Valider")')
-  if (await validateBtn.count() > 0) {
-    await validateBtn.click()
-    await page.waitForSelector('text=Explication', { timeout: 10000 })
+// 5. Targeted quiz flow — run ALL 36 questions of o1-1 to deterministically
+// exercise every question type (single/multiple/case-study/solution-goal
+// via choice click, reorder via drag, active-screen via field interaction).
+await page.goto(`${BASE}/#/objectives/o1-1/quiz?n=36`, { waitUntil: 'networkidle' })
+await page.waitForSelector('.card', { timeout: 10000 })
+
+let sawReorder = false
+let sawActiveScreen = false
+let reorderChanged = false
+
+for (let i = 0; i < 36; i++) {
+  await page.waitForSelector('.card', { timeout: 10000 })
+  const isReorder = (await page.locator('text=Glisser-déposer pour ordonner').count()) > 0
+  const isActiveScreen = (await page.locator('text=Active screen').count()) > 0
+
+  if (isReorder) {
+    sawReorder = true
+    const items = page.locator('.choice')
+    const count = await items.count()
+    if (count >= 2) {
+      const beforeTexts = await items.allTextContents()
+      const box0 = await items.nth(0).boundingBox()
+      const box1 = await items.nth(1).boundingBox()
+      if (box0 && box1) {
+        await page.mouse.move(box0.x + box0.width / 2, box0.y + box0.height / 2)
+        await page.mouse.down()
+        await page.mouse.move(box1.x + box1.width / 2, box1.y + box1.height + 5, { steps: 8 })
+        await page.mouse.up()
+        await page.waitForTimeout(200)
+        const afterTexts = await items.allTextContents()
+        if (JSON.stringify(beforeTexts) !== JSON.stringify(afterTexts)) reorderChanged = true
+      }
+    }
+    await page.click('button:has-text("Valider")')
+  } else if (isActiveScreen) {
+    sawActiveScreen = true
+    // Toggle every toggle-kind field once, pick the first non-empty option for selects.
+    const toggleButtons = page.locator('.diagram button.btn.secondary')
+    const toggleCount = await toggleButtons.count()
+    for (let t = 0; t < toggleCount; t++) {
+      await toggleButtons.nth(t).click()
+    }
+    const selects = page.locator('.diagram select')
+    const selectCount = await selects.count()
+    for (let s = 0; s < selectCount; s++) {
+      const options = await selects.nth(s).locator('option').allTextContents()
+      const firstReal = options.find((o) => o !== 'Choisir…')
+      if (firstReal) await selects.nth(s).selectOption({ label: firstReal })
+    }
+    await page.click('button:has-text("Valider")')
+  } else {
+    await page.locator('.choice').first().click()
+    await page.click('button:has-text("Valider")')
   }
+
+  await page.waitForSelector('text=Explication', { timeout: 10000 })
   const nextBtn = page.locator('button:has-text("Question suivante"), button:has-text("Voir le résultat")')
-  if (await nextBtn.count() > 0) {
-    await nextBtn.click()
-  }
+  await nextBtn.click()
 }
-await shot('05-quiz-in-progress')
-ok('Quiz flow: answered 3 questions with validate/next working')
+
+await page.waitForSelector('text=Résultat', { timeout: 10000 })
+await shot('05-quiz-result')
+
+if (!sawReorder) fail('Quiz reorder type', 'no reorder question encountered across all 36 questions')
+else ok('Quiz flow: encountered and answered reorder question(s)')
+if (!reorderChanged) fail('Quiz reorder drag', 'dragging did not change item order')
+else ok('Quiz flow: drag-and-drop reordering changed item order')
+if (!sawActiveScreen) fail('Quiz active-screen type', 'no active-screen question encountered across all 36 questions')
+else ok('Quiz flow: encountered and answered active-screen question(s)')
+ok('Quiz flow: completed all 36 questions (single/multiple/case-study/solution-goal/reorder/active-screen)')
 
 // 6. Mock exam flow
 await page.goto(`${BASE}/#/exam`, { waitUntil: 'networkidle' })
@@ -99,6 +151,32 @@ await page.waitForSelector('.timer', { timeout: 10000 })
 ok('Exam session started, timer visible')
 await page.locator('.choice').first().click()
 await shot('06-exam-session')
+
+// 6b. Solution-goal lock: scan questions via qnav for one, move past it via
+// "Suivant", then verify its qnav pill becomes disabled/locked and Précédent
+// can no longer reach it — mirroring real-exam no-return-navigation.
+const qnavButtons = page.locator('.qnav button')
+const qnavCount = await qnavButtons.count()
+let lockTested = false
+for (let i = 0; i < qnavCount && !lockTested; i++) {
+  await qnavButtons.nth(i).click()
+  const isSolutionGoal = (await page.locator('text=Une fois passé à la question suivante').count()) > 0
+  if (isSolutionGoal) {
+    lockTested = true
+    await page.locator('.choice').first().click()
+    await page.click('button:has-text("Suivant")')
+    await page.waitForTimeout(150)
+    const lockedDisabled = await qnavButtons.nth(i).isDisabled()
+    if (!lockedDisabled) fail('Solution-goal lock', 'qnav pill for left solution-goal question is not disabled')
+    else ok('Solution-goal lock: qnav pill disabled after leaving the question')
+    const prevBtn = page.locator('button:has-text("Précédent")')
+    const prevDisabled = await prevBtn.isDisabled()
+    if (!prevDisabled) fail('Solution-goal lock', "'Précédent' is not disabled after a locked solution-goal question")
+    else ok("Solution-goal lock: 'Précédent' disabled, cannot revisit")
+  }
+}
+if (!lockTested) console.log('NOTE: no solution-goal question found in this exam draw (random) — lock behavior not exercised this run')
+
 await page.click('button:has-text("Terminer l\'examen")')
 await page.waitForSelector("text=Résultat de l'examen blanc", { timeout: 15000 })
 await page.waitForSelector('text=Détail par domaine', { timeout: 15000 })

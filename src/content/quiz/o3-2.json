@@ -460,5 +460,80 @@
     "correctAnswers": ["Managed identities on the VMs with Azure RBAC data roles on the storage account, and disable shared-key access"],
     "explanation": "Managed identities + RBAC data roles give credential-free, identity-based access; disabling shared-key access enforces it.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-31",
+    "objectiveId": "o3-2",
+    "type": "reorder",
+    "prompt": "Order the steps to migrate an on-premises file server to Azure Files without deploying a domain controller in Azure.",
+    "reorderItems": [
+      "Create the Azure Files share",
+      "Enable Microsoft Entra Kerberos authentication on the storage account",
+      "Assign Azure RBAC data roles for share-level access",
+      "Apply NTFS permissions on individual folders"
+    ],
+    "explanation": "The share and identity source must exist before share-level RBAC is assigned, with fine-grained NTFS permissions applied last.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-32",
+    "objectiveId": "o3-2",
+    "type": "reorder",
+    "prompt": "Order the steps to make blob backups tamper-proof for a 7-year compliance retention.",
+    "reorderItems": [
+      "Enable a time-based immutability policy on the container",
+      "Set the retention period to 7 years",
+      "Lock the immutability policy",
+      "Confirm that deletion attempts are blocked during the retention period"
+    ],
+    "explanation": "The policy and its retention period must be set before locking it irreversibly, with verification last.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-33",
+    "objectiveId": "o3-2",
+    "type": "active-screen",
+    "prompt": "Configure this simplified storage account security screen to force identity-based access only, restricted to selected networks.",
+    "screenTitle": "Storage account security (simulated)",
+    "fields": [
+      { "id": "sharedKey", "label": "Allow storage account key access", "kind": "toggle", "correctValue": "Off" },
+      { "id": "secureTransfer", "label": "Secure transfer required", "kind": "toggle", "correctValue": "On" },
+      { "id": "publicAccess", "label": "Public network access", "kind": "select", "options": ["Enabled from all networks", "Disabled", "Enabled from selected virtual networks"], "correctValue": "Enabled from selected virtual networks" }
+    ],
+    "explanation": "Disabling shared-key access forces Entra-based access, secure transfer enforces HTTPS, and selected-networks access matches the 'restricted' requirement.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-34",
+    "objectiveId": "o3-2",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o3-2",
+    "prompt": "Proposed solution: Share the storage account's primary access key with the partner. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "The account key grants broad, root-like access to the whole account — the opposite of scoped, read-only, time-limited access.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-35",
+    "objectiveId": "o3-2",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o3-2",
+    "prompt": "Proposed solution: Issue a user-delegation SAS scoped to that blob with read-only rights and an expiry. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["Yes"],
+    "explanation": "A user-delegation SAS is scoped, time-limited, and revocable, and it doesn't require sharing the account keys.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-36",
+    "objectiveId": "o3-2",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o3-2",
+    "prompt": "Proposed solution: Make the blob container public for anonymous read access. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "This exposes the data to anyone, not just the partner, and isn't time-limited — it fails the scoped-access requirement.",
+    "difficulty": "medium"
   }
 ]

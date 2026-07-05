@@ -9,21 +9,24 @@ import {
   type ExamSessionState,
 } from '../lib/examSession'
 import { scaleScore, PASSING_SCORE, seededShuffle } from '../lib/examBuilder'
+import { emptyResponse, hasAnswer, isQuestionCorrect } from '../lib/grading'
 import { applySm2Update, createInitialProgress } from '../lib/spacedRepetition'
 import { db } from '../db'
-import QuestionCard from '../components/QuestionCard'
-import type { DomainScore } from '../types'
-
-function isCorrect(correctAnswers: string[], selected: string[]): boolean {
-  if (selected.length !== correctAnswers.length) return false
-  const correctSet = new Set(correctAnswers)
-  return selected.every((choice) => correctSet.has(choice))
-}
+import QuestionRenderer from '../components/QuestionRenderer'
+import type { DomainScore, QuestionResponse, QuizQuestion } from '../types'
 
 function formatTime(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60)
   const s = totalSeconds % 60
   return `${m}:${s.toString().padStart(2, '0')}`
+}
+
+function displayFor(question: QuizQuestion, salt: string): { choices?: string[]; order?: string[] } {
+  if (question.type === 'reorder') {
+    return { order: seededShuffle(question.reorderItems ?? [], `${question.id}:${salt}`) }
+  }
+  if (question.type === 'active-screen') return {}
+  return { choices: seededShuffle(question.choices ?? [], `${question.id}:${salt}`) }
 }
 
 export default function ExamSession() {
@@ -56,23 +59,58 @@ export default function ExamSession() {
   const questions = session.questionIds.map((id) => questionsById[id]).filter(Boolean)
   const current = questions[index]
   const caseStudy = current?.caseStudyId ? caseStudiesById[current.caseStudyId] : null
-  const currentAnswers = session.answers[current?.id] ?? []
-  // Deterministic per-question choice order, stable for the whole session
-  // (seed = question id + session start), reshuffled only on a new exam.
-  const currentChoices = current ? seededShuffle(current.choices, `${current.id}:${session.startedAt}`) : []
+  const currentResponse: QuestionResponse = current
+    ? session.answers[current.id] ?? emptyResponse(current)
+    : { kind: 'choices', selected: [] }
+  const display = current ? displayFor(current, session.startedAt) : {}
+  const lockedSet = new Set(session.lockedQuestionIds)
 
-  function updateAnswers(choice: string) {
-    if (!session || !current) return
-    const prev = session.answers[current.id] ?? []
-    let next: string[]
+  function persist(updated: ExamSessionState) {
+    setSession(updated)
+    saveExamSession(updated)
+  }
+
+  function updateResponse(response: QuestionResponse) {
+    if (!session || !current || lockedSet.has(current.id)) return
+    persist({ ...session, answers: { ...session.answers, [current.id]: response } })
+  }
+
+  function toggleChoice(choice: string) {
+    if (!current) return
     if (current.type === 'multiple') {
-      next = prev.includes(choice) ? prev.filter((c) => c !== choice) : [...prev, choice]
+      const prev = currentResponse.kind === 'choices' ? currentResponse.selected : []
+      const selected = prev.includes(choice) ? prev.filter((c) => c !== choice) : [...prev, choice]
+      updateResponse({ kind: 'choices', selected })
     } else {
-      next = [choice]
+      updateResponse({ kind: 'choices', selected: [choice] })
     }
-    const updatedSession = { ...session, answers: { ...session.answers, [current.id]: next } }
-    setSession(updatedSession)
-    saveExamSession(updatedSession)
+  }
+
+  function reorder(order: string[]) {
+    updateResponse({ kind: 'order', order })
+  }
+
+  function setField(fieldId: string, value: string) {
+    const values = currentResponse.kind === 'fields' ? currentResponse.values : {}
+    updateResponse({ kind: 'fields', values: { ...values, [fieldId]: value } })
+  }
+
+  /**
+   * Mirrors real-exam behavior: leaving a 'solution-goal' question locks it
+   * permanently. Called before every navigation away from the current
+   * question. Refuses to navigate onto an already-locked question.
+   */
+  function goToIndex(targetIndex: number) {
+    if (!session || targetIndex < 0 || targetIndex >= questions.length) return
+    if (targetIndex === index) return
+    const targetId = questions[targetIndex].id
+    if (lockedSet.has(targetId)) return
+
+    if (current?.type === 'solution-goal' && !lockedSet.has(current.id)) {
+      const updated = { ...session, lockedQuestionIds: [...session.lockedQuestionIds, current.id] }
+      persist(updated)
+    }
+    setIndex(targetIndex)
   }
 
   async function handleSubmit() {
@@ -84,8 +122,8 @@ export default function ExamSession() {
     let correctCount = 0
 
     questions.forEach((q) => {
-      const selected = session.answers[q.id] ?? []
-      const correct = isCorrect(q.correctAnswers, selected)
+      const response = session.answers[q.id] ?? emptyResponse(q)
+      const correct = isQuestionCorrect(q, response)
       if (correct) correctCount += 1
 
       const objective = objectivesById[q.objectiveId]
@@ -121,7 +159,7 @@ export default function ExamSession() {
       questions.map((q) => ({
         objectiveId: q.objectiveId,
         questionId: q.id,
-        correct: isCorrect(q.correctAnswers, session.answers[q.id] ?? []),
+        correct: isQuestionCorrect(q, session.answers[q.id] ?? emptyResponse(q)),
         mode: 'exam' as const,
         timestamp: new Date().toISOString(),
         examResultId: resultId as number,
@@ -142,7 +180,8 @@ export default function ExamSession() {
     navigate(`/exam/results/${resultId}`)
   }
 
-  const answeredCount = questions.filter((q) => (session.answers[q.id]?.length ?? 0) > 0).length
+  const answeredCount = questions.filter((q) => hasAnswer(session.answers[q.id] ?? emptyResponse(q))).length
+  const previousLocked = index > 0 && lockedSet.has(questions[index - 1].id)
 
   return (
     <div>
@@ -155,23 +194,40 @@ export default function ExamSession() {
 
       <div className="qnav">
         {questions.map((q, i) => {
-          const answered = (session.answers[q.id]?.length ?? 0) > 0
+          const answered = hasAnswer(session.answers[q.id] ?? emptyResponse(q))
+          const locked = lockedSet.has(q.id)
           const cls = ['', answered ? 'answered' : '', i === index ? 'current' : ''].filter(Boolean).join(' ')
           return (
-            <button key={q.id} className={cls} onClick={() => setIndex(i)}>
+            <button
+              key={q.id}
+              className={cls}
+              disabled={locked && i !== index}
+              title={locked ? 'Verrouillée (solution/objectif) — non révisable' : undefined}
+              style={locked ? { opacity: 0.4, textDecoration: 'line-through' } : undefined}
+              onClick={() => goToIndex(i)}
+            >
               {i + 1}
             </button>
           )
         })}
       </div>
 
+      {current?.type === 'solution-goal' && !lockedSet.has(current.id) && (
+        <div className="chip warn" style={{ marginBottom: '0.75rem' }}>
+          ⚠️ Une fois passé à la question suivante, tu ne pourras plus revenir sur celle-ci — comme dans le vrai
+          examen.
+        </div>
+      )}
+
       {current && (
-        <QuestionCard
+        <QuestionRenderer
           question={current}
-          displayChoices={currentChoices}
           caseStudy={caseStudy}
-          selected={currentAnswers}
-          onChange={updateAnswers}
+          response={currentResponse}
+          displayChoices={display.choices}
+          onToggleChoice={toggleChoice}
+          onReorder={reorder}
+          onSetField={setField}
           revealed={false}
           questionNumber={index + 1}
           totalQuestions={questions.length}
@@ -179,14 +235,10 @@ export default function ExamSession() {
       )}
 
       <div className="btn-row">
-        <button className="btn secondary" disabled={index === 0} onClick={() => setIndex((i) => i - 1)}>
+        <button className="btn secondary" disabled={index === 0 || previousLocked} onClick={() => goToIndex(index - 1)}>
           ← Précédent
         </button>
-        <button
-          className="btn secondary"
-          disabled={index + 1 >= questions.length}
-          onClick={() => setIndex((i) => i + 1)}
-        >
+        <button className="btn secondary" disabled={index + 1 >= questions.length} onClick={() => goToIndex(index + 1)}>
           Suivant →
         </button>
         <button className="btn" onClick={() => void handleSubmit()} disabled={submitting}>

@@ -460,5 +460,79 @@
     "correctAnswers": ["Disable the ACR admin account and grant access via Azure RBAC or repository-scoped tokens"],
     "explanation": "Disabling the shared admin account and using per-identity RBAC/tokens gives attributable, least-privilege access.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-31",
+    "objectiveId": "o3-1",
+    "type": "reorder",
+    "prompt": "Order the steps to give an administrator time-limited RDP access to a VM that has no public IP.",
+    "reorderItems": [
+      "Deploy Azure Bastion into the VM's VNet",
+      "Enable just-in-time VM access on the VM in Defender for Cloud",
+      "The administrator requests access for a limited time and source IP",
+      "Connect to the VM through Bastion during the approved window"
+    ],
+    "explanation": "Bastion and JIT must both be set up before a time-bound request can be made and used to connect.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-32",
+    "objectiveId": "o3-1",
+    "type": "reorder",
+    "prompt": "Order the steps to harden an Azure Container Registry.",
+    "reorderItems": [
+      "Disable the ACR admin account",
+      "Grant developers access via Azure RBAC or repository-scoped tokens",
+      "Add a private endpoint to remove public exposure",
+      "Enable vulnerability scanning on pushed images"
+    ],
+    "explanation": "Remove the shared credential first, replace it with governed access, then close network exposure and add ongoing scanning.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-33",
+    "objectiveId": "o3-1",
+    "type": "active-screen",
+    "prompt": "Configure this simplified AKS cluster creation screen for a cluster whose users must authenticate with corporate identities, not static credentials, and whose API server must not be internet-reachable.",
+    "screenTitle": "Create AKS cluster (simulated)",
+    "fields": [
+      { "id": "authMode", "label": "Authentication and authorization", "kind": "select", "options": ["Local accounts", "Microsoft Entra ID with Azure RBAC"], "correctValue": "Microsoft Entra ID with Azure RBAC" },
+      { "id": "apiAccess", "label": "API server access", "kind": "select", "options": ["Public", "Private"], "correctValue": "Private" }
+    ],
+    "explanation": "Entra integration with Azure RBAC replaces static credentials, and a private API server has no public endpoint.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-34",
+    "objectiveId": "o3-1",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o3-1",
+    "prompt": "Proposed solution: Enable Azure Disk Encryption (ADE) with BitLocker inside the guest. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "ADE encrypts in-guest and requires an in-guest agent/BitLocker — the goal specifically requires no in-guest agent.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-35",
+    "objectiveId": "o3-1",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o3-1",
+    "prompt": "Proposed solution: Enable encryption at host on the VM. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["Yes"],
+    "explanation": "Encryption at host works at the VM host level, covering temp disks/caches, with no in-guest agent required.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-36",
+    "objectiveId": "o3-1",
+    "type": "solution-goal",
+    "caseStudyId": "sg-o3-1",
+    "prompt": "Proposed solution: Enable confidential disk encryption on a standard (non-confidential) VM. Does this solution meet the goal?",
+    "choices": ["Yes", "No"],
+    "correctAnswers": ["No"],
+    "explanation": "Confidential disk encryption requires a confidential VM with a hardware trusted execution environment — it isn't available on a standard VM.",
+    "difficulty": "medium"
   }
 ]
