@@ -535,5 +535,80 @@
     "correctAnswers": ["No"],
     "explanation": "TDE protects data at rest; it does not log access or queries, so it cannot provide an audit trail.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-37",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "Which command sets an Entra group as the Microsoft Entra admin of SQL server sql1?",
+    "choices": [
+      "az sql server ad-admin create --server sql1 --resource-group RG1 --display-name SecAdmins --object-id <groupObjectId>",
+      "az sql server update --name sql1 --admin-group SecAdmins",
+      "az sql db ad-admin set --database db1 --group SecAdmins",
+      "az ad group update --id SecAdmins --sql-server sql1"
+    ],
+    "correctAnswers": ["az sql server ad-admin create --server sql1 --resource-group RG1 --display-name SecAdmins --object-id <groupObjectId>"],
+    "explanation": "The Entra admin is a SERVER-level setting via `az sql server ad-admin create`. It isn't per-database, and the other syntaxes don't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-38",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "Which command disables SQL logins entirely on server sql1 (Entra-only authentication)?",
+    "choices": [
+      "az sql server ad-only-auth enable --name sql1 --resource-group RG1",
+      "az sql server update --name sql1 --sql-logins disabled",
+      "az sql server ad-admin create --server sql1 --exclusive",
+      "az sql db update --name db1 --auth entra-only"
+    ],
+    "correctAnswers": ["az sql server ad-only-auth enable --name sql1 --resource-group RG1"],
+    "explanation": "`az sql server ad-only-auth enable` (PowerShell: Enable-AzSqlServerActiveDirectoryOnlyAuthentication) enforces Entra-only auth. The others are invented.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-39",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "Which command enables auditing on database db1, sending events to a Log Analytics workspace?",
+    "choices": [
+      "az sql db audit-policy update --server sql1 --name db1 --resource-group RG1 --state Enabled --log-analytics-target-state Enabled --log-analytics-workspace-resource-id <wsId>",
+      "az sql db update --name db1 --audit-log workspace <wsId>",
+      "az monitor diagnostic-settings create --resource db1 --audit true",
+      "az sql server audit enable --workspace <wsId>"
+    ],
+    "correctAnswers": ["az sql db audit-policy update --server sql1 --name db1 --resource-group RG1 --state Enabled --log-analytics-target-state Enabled --log-analytics-workspace-resource-id <wsId>"],
+    "explanation": "SQL auditing is managed with `az sql db audit-policy update` (or server-level `az sql server audit-policy update`). Diagnostic settings alone don't enable SQL auditing; the others don't exist.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o3-3-40",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "Which PowerShell cmdlet checks whether TDE is enabled on a database?",
+    "choices": [
+      "Get-AzSqlDatabaseTransparentDataEncryption",
+      "Get-AzSqlDatabaseEncryptionStatus",
+      "Get-AzTdeState",
+      "Get-AzSqlServerKeyVaultKey"
+    ],
+    "correctAnswers": ["Get-AzSqlDatabaseTransparentDataEncryption"],
+    "explanation": "Get-AzSqlDatabaseTransparentDataEncryption returns the TDE state. Get-AzSqlServerKeyVaultKey relates to BYOK keys for TDE, not its status; the other two don't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-3-41",
+    "objectiveId": "o3-3",
+    "type": "single",
+    "prompt": "Which PowerShell cmdlet sets the Microsoft Entra admin on a SQL server?",
+    "choices": [
+      "Set-AzSqlServerActiveDirectoryAdministrator",
+      "Set-AzSqlServerAdmin",
+      "New-AzSqlServerEntraAdmin",
+      "Set-AzSqlDatabaseAdministrator"
+    ],
+    "correctAnswers": ["Set-AzSqlServerActiveDirectoryAdministrator"],
+    "explanation": "Set-AzSqlServerActiveDirectoryAdministrator is the real cmdlet (the module still uses the ActiveDirectory naming). The other three don't exist.",
+    "difficulty": "medium"
   }
 ]

@@ -17,6 +17,12 @@ export interface Objective {
   officialSkills: string[]
 }
 
+export interface CommandExample {
+  task: string
+  cli?: string
+  powershell?: string
+}
+
 export interface LessonContent {
   objectiveId: string
   summary: string
@@ -24,6 +30,7 @@ export interface LessonContent {
   commonPitfalls: string[]
   learnLinks: string[]
   diagrams?: string[]
+  commands?: CommandExample[]
 }
 
 export type QuestionType =

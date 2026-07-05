@@ -13,7 +13,8 @@
       "Configurer PIM pour un rôle de ressource Azure : `Entra admin center ▸ Identity Governance ▸ Privileged Identity Management ▸ Azure resources` ▸ choisir le scope ▸ Assignments ▸ Add assignments (type = **Eligible**) ; puis dans les **Settings** du rôle, exiger MFA à l'activation, approbation, justification et une durée d'activation maximale.",
       "Le MFA pour l'accès aux ressources Azure s'impose via une **politique Conditional Access**, pas un interrupteur par ressource : cibler la ressource **Windows Azure Service Management API**, qui couvre tout le plan de contrôle Azure Resource Manager (portail Azure, Azure PowerShell, Azure CLI).",
       "Configurer : `Entra admin center ▸ Entra ID ▸ Conditional Access ▸ Policies ▸ New policy` ▸ Assignments (users/groupes) ▸ Target resources ▸ sélectionner **Windows Azure Service Management API** ▸ Grant ▸ **Require multifactor authentication**. Piloter en mode **Report-only** avant de passer la politique **On**.",
-      "Un **Global Administrator** n'a par défaut aucune permission sur les ressources Azure, mais peut s'accorder un accès d'urgence : `Entra admin center ▸ Entra ID ▸ Properties` ▸ passer **Access management for Azure resources** à **Yes**. Cela attribue **User Access Administrator** au scope racine du tenant (`/`) à cet utilisateur seul, est **audité** dans les journaux Entra et Azure, et doit être remis à **No** une fois l'urgence traitée."
+      "Un **Global Administrator** n'a par défaut aucune permission sur les ressources Azure, mais peut s'accorder un accès d'urgence : `Entra admin center ▸ Entra ID ▸ Properties` ▸ passer **Access management for Azure resources** à **Yes**. Cela attribue **User Access Administrator** au scope racine du tenant (`/`) à cet utilisateur seul, est **audité** dans les journaux Entra et Azure, et doit être remis à **No** une fois l'urgence traitée.",
+      "**Microsoft Entra ID Protection** détecte les risques d'identité : **user risk** (identité probablement compromise, ex. credentials fuités) et **sign-in risk** (connexion suspecte, ex. voyage impossible, IP anonyme). On y répond via des politiques Conditional Access **risk-based** : exiger un changement de mot de passe sur user risk élevé, exiger MFA sur sign-in risk moyen+."
     ],
     "commonPitfalls": [
       "**« Microsoft Azure Management »** est un ancien nom (informel) de cette même app cloud. La doc Microsoft Learn (avril 2026) et le portail actuel l'appellent **« Windows Azure Service Management API »** ; la section Conditional Access autrefois nommée « Cloud apps » s'appelle désormais **« Resources »**. Les deux noms désignent le même plan de contrôle ARM — reconnaître l'un ou l'autre à l'examen. Source : https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-old-require-mfa-azure-mgmt",
@@ -22,11 +23,34 @@
       "Toujours **exclure** les comptes d'accès d'urgence (**break-glass**) et les service principals des politiques Conditional Access exigeant le MFA. Les service principals sont non interactifs et ne sont pas évalués par les politiques ciblant les utilisateurs — utiliser **Conditional Access for workload identities** pour eux.",
       "L'élévation **« Access management for Azure resources »** est un réglage **par utilisateur**, pas une configuration permanente du tenant — elle ne se retire pas automatiquement à la désactivation d'un rôle PIM, et Microsoft recommande de la remettre à **No** dès la tâche d'urgence terminée."
     ],
+    "commands": [
+      {
+        "task": "Attribuer un rôle intégré à un principal sur un scope précis",
+        "cli": "az role assignment create --assignee \"user@contoso.com\" --role \"Reader\" --scope \"/subscriptions/<subId>/resourceGroups/RG1\"",
+        "powershell": "New-AzRoleAssignment -SignInName user@contoso.com -RoleDefinitionName Reader -ResourceGroupName RG1"
+      },
+      {
+        "task": "Lister les attributions de rôles effectives sur un scope",
+        "cli": "az role assignment list --scope \"/subscriptions/<subId>/resourceGroups/RG1\" --include-inherited",
+        "powershell": "Get-AzRoleAssignment -ResourceGroupName RG1"
+      },
+      {
+        "task": "Créer un rôle personnalisé à partir d'une définition JSON",
+        "cli": "az role definition create --role-definition @customRole.json",
+        "powershell": "New-AzRoleDefinition -InputFile customRole.json"
+      },
+      {
+        "task": "Supprimer une attribution de rôle",
+        "cli": "az role assignment delete --assignee \"user@contoso.com\" --role \"Reader\" --scope \"/subscriptions/<subId>/resourceGroups/RG1\"",
+        "powershell": "Remove-AzRoleAssignment -SignInName user@contoso.com -RoleDefinitionName Reader -ResourceGroupName RG1"
+      }
+    ],
     "learnLinks": [
       "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview",
       "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure",
       "https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-old-require-mfa-azure-mgmt",
-      "https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin"
+      "https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin",
+      "https://learn.microsoft.com/en-us/entra/id-protection/overview-identity-protection"
     ]
   },
   {
@@ -41,7 +65,8 @@
       "Gérer le consentement à l'échelle du tenant sous `Entra admin center ▸ Enterprise applications ▸ Consent and permissions` : restreindre le **user consent** aux verified publishers et permissions à faible impact, et router le reste par le **admin consent workflow** pour approbation par un administrateur.",
       "Un **service principal** est l'identité locale et gouvernable de toute app dans un tenant — chaque app registration en a un, et **tu es responsable de ses credentials** (secrets/certificats)… sauf si c'est une identité managée.",
       "Les **identités managées** sont des service principals gérés par Azure, **sans credential à manipuler**. **System-assigned** : créée sur, et liée à, une seule ressource, supprimée automatiquement avec elle — idéal pour une identité 1:1. **User-assigned** : ressource autonome, attachable à plusieurs ressources, gérée et survivant indépendamment — idéal quand plusieurs ressources doivent partager la **même** identité, ou qu'elle doit survivre à une ressource.",
-      "**Préférer une identité managée** à un service principal avec client secret dès que la charge de travail s'exécute sur une ressource Azure compatible — **aucun secret à fuiter, stocker ou faire tourner**."
+      "**Préférer une identité managée** à un service principal avec client secret dès que la charge de travail s'exécute sur une ressource Azure compatible — **aucun secret à fuiter, stocker ou faire tourner**.",
+      "**Microsoft Entra Application Proxy** publie des applications web **on-premises** vers l'extérieur via Entra ID, sans ouvrir de port entrant sur le pare-feu : un **connecteur** installé en interne établit des connexions sortantes, et les utilisateurs s'authentifient via Entra (avec Conditional Access/MFA applicables) avant d'atteindre l'app interne — du remote access sans VPN."
     ],
     "commonPitfalls": [
       "**App registration** (« ce que l'app peut demander », global) vs **Enterprise application** (« ce qui est réellement accordé et gouverné dans ce tenant », le service principal local) — les deux noms sont fréquemment inversés dans les distracteurs d'examen.",
@@ -49,10 +74,33 @@
       "**Application permissions = aucun utilisateur connecté = admin consent obligatoire**, quelle que soit l'apparente faible portée de la permission.",
       "Ne pas dégainer un service principal + client secret quand la charge de travail tourne déjà sur une ressource Azure capable d'une **identité managée**."
     ],
+    "commands": [
+      {
+        "task": "Activer une identité managée system-assigned sur une VM existante",
+        "cli": "az vm identity assign --name VM1 --resource-group RG1",
+        "powershell": "Update-AzVM -ResourceGroupName RG1 -VM $vm -IdentityType SystemAssigned"
+      },
+      {
+        "task": "Créer une identité managée user-assigned (ressource autonome)",
+        "cli": "az identity create --name MyIdentity --resource-group RG1",
+        "powershell": "New-AzUserAssignedIdentity -Name MyIdentity -ResourceGroupName RG1"
+      },
+      {
+        "task": "Attacher une identité user-assigned à une VM",
+        "cli": "az vm identity assign --name VM1 --resource-group RG1 --identities /subscriptions/<subId>/resourcegroups/RG1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity",
+        "powershell": "Update-AzVM -ResourceGroupName RG1 -VM $vm -IdentityType UserAssigned -IdentityId <identityResourceId>"
+      },
+      {
+        "task": "Créer un service principal pour une app (avec rôle et scope)",
+        "cli": "az ad sp create-for-rbac --name MyApp --role Reader --scopes /subscriptions/<subId>",
+        "powershell": "New-AzADServicePrincipal -DisplayName MyApp"
+      }
+    ],
     "learnLinks": [
       "https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview",
       "https://learn.microsoft.com/en-us/entra/identity-platform/app-objects-and-service-principals",
-      "https://learn.microsoft.com/en-us/entra/identity-platform/v2-permissions-and-consent"
+      "https://learn.microsoft.com/en-us/entra/identity-platform/v2-permissions-and-consent",
+      "https://learn.microsoft.com/en-us/entra/identity/app-proxy/overview-what-is-app-proxy"
     ]
   }
 ]

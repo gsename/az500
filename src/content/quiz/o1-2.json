@@ -511,5 +511,80 @@
     "correctAnswers": ["No"],
     "explanation": "This is still a stored, long-lived credential in configuration — Key Vault authorization doesn't work this way, and it fails the 'no stored credential' requirement either way.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-37",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "Which Azure CLI command enables a system-assigned managed identity on an existing VM?",
+    "choices": [
+      "az vm identity assign --name VM1 --resource-group RG1",
+      "az identity create --name VM1 --resource-group RG1",
+      "az vm update --name VM1 --resource-group RG1 --managed-identity system",
+      "az ad sp create-for-rbac --vm VM1"
+    ],
+    "correctAnswers": ["az vm identity assign --name VM1 --resource-group RG1"],
+    "explanation": "`az vm identity assign` enables the system-assigned identity on the VM. `az identity create` creates a standalone user-assigned identity; the other two are invented syntax.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-38",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "Which command creates a USER-assigned managed identity as a standalone resource?",
+    "choices": [
+      "az identity create --name MyIdentity --resource-group RG1",
+      "az vm identity assign --name MyIdentity --resource-group RG1",
+      "az ad app create --display-name MyIdentity --managed",
+      "New-AzADServicePrincipal -Name MyIdentity -UserAssigned"
+    ],
+    "correctAnswers": ["az identity create --name MyIdentity --resource-group RG1"],
+    "explanation": "User-assigned identities are their own resource, created with `az identity create` (PowerShell: New-AzUserAssignedIdentity). `az vm identity assign` attaches identities to a VM; the others don't create managed identities.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-39",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "Which PowerShell cmdlet creates a user-assigned managed identity?",
+    "choices": [
+      "New-AzUserAssignedIdentity",
+      "New-AzADServicePrincipal",
+      "New-AzManagedIdentity",
+      "Set-AzVMIdentity"
+    ],
+    "correctAnswers": ["New-AzUserAssignedIdentity"],
+    "explanation": "New-AzUserAssignedIdentity is the dedicated cmdlet. New-AzADServicePrincipal creates a classic service principal (credentials to manage); the other two don't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-40",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "Which command creates a service principal for automation AND assigns it Reader on the subscription in one step?",
+    "choices": [
+      "az ad sp create-for-rbac --name MyApp --role Reader --scopes /subscriptions/<subId>",
+      "az ad app create --name MyApp --role Reader --subscription <subId>",
+      "az identity create --name MyApp --role Reader",
+      "az role assignment create --sp MyApp --role Reader"
+    ],
+    "correctAnswers": ["az ad sp create-for-rbac --name MyApp --role Reader --scopes /subscriptions/<subId>"],
+    "explanation": "`az ad sp create-for-rbac` creates the app + SP + credential and can assign a role in one step. `az ad app create` only registers the app; `az identity create` makes a managed identity without role parameters like this.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-2-41",
+    "objectiveId": "o1-2",
+    "type": "single",
+    "prompt": "A VM's system-assigned managed identity must read secrets from Key Vault KV1 (RBAC model). Which command completes the setup?",
+    "choices": [
+      "az role assignment create --assignee <identityPrincipalId> --role \"Key Vault Secrets User\" --scope <kv1ResourceId>",
+      "az keyvault set-policy --name KV1 --spn <identityPrincipalId> --secret-permissions get  # vault en modèle RBAC",
+      "az keyvault update --name KV1 --default-action Allow",
+      "az vm identity assign --name VM1 --keyvault KV1"
+    ],
+    "correctAnswers": ["az role assignment create --assignee <identityPrincipalId> --role \"Key Vault Secrets User\" --scope <kv1ResourceId>"],
+    "explanation": "With the RBAC access model, authorization is a data-plane role assignment (Key Vault Secrets User). `set-policy` belongs to the legacy access-policy model and is ignored/invalid on an RBAC vault.",
+    "difficulty": "hard"
   }
 ]

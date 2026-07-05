@@ -539,6 +539,49 @@ code.inline-code {
   color: var(--text-dim);
 }
 
+/* ---------- Command blocks ---------- */
+
+.cmd-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.7rem;
+}
+.cmd-task {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.cmd-block {
+  display: block;
+  position: relative;
+  margin: 0.35rem 0 0;
+  padding: 0.6rem 0.8rem 0.6rem 4.6rem;
+  border-radius: 8px;
+  background: #101426;
+  color: #dbe4f5;
+  font-family: 'Cascadia Code', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  overflow-x: auto;
+  white-space: pre;
+}
+:root[data-theme='dark'] .cmd-block {
+  background: #0a0d1a;
+  border: 1px solid var(--border);
+}
+.cmd-block::before {
+  content: attr(data-shell);
+  position: absolute;
+  left: 0.6rem;
+  top: 0.62rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--accent-2);
+  text-transform: uppercase;
+}
+
 .section-title {
   display: flex;
   align-items: center;

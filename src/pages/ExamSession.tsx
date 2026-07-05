@@ -59,10 +59,16 @@ export default function ExamSession() {
   const questions = session.questionIds.map((id) => questionsById[id]).filter(Boolean)
   const current = questions[index]
   const caseStudy = current?.caseStudyId ? caseStudiesById[current.caseStudyId] : null
-  const currentResponse: QuestionResponse = current
-    ? session.answers[current.id] ?? emptyResponse(current)
-    : { kind: 'choices', selected: [] }
   const display = current ? displayFor(current, session.startedAt) : {}
+  // For an unanswered reorder question, seed the response with the shuffled
+  // full item list so there is something to drag (an empty order would
+  // render no items at all).
+  const currentResponse: QuestionResponse = current
+    ? session.answers[current.id] ??
+      (current.type === 'reorder'
+        ? { kind: 'order', order: display.order ?? [] }
+        : emptyResponse(current))
+    : { kind: 'choices', selected: [] }
   const lockedSet = new Set(session.lockedQuestionIds)
 
   function persist(updated: ExamSessionState) {

@@ -534,5 +534,80 @@
     "correctAnswers": ["No"],
     "explanation": "Confidential disk encryption requires a confidential VM with a hardware trusted execution environment — it isn't available on a standard VM.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-37",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "Which command enables Azure Disk Encryption (ADE) on VM1 with keys in Key Vault KV1?",
+    "choices": [
+      "az vm encryption enable --name VM1 --resource-group RG1 --disk-encryption-keyvault KV1",
+      "az vm update --name VM1 --resource-group RG1 --encryption-at-host true",
+      "az disk update --name VM1-osdisk --encryption ADE --vault KV1",
+      "az keyvault key encrypt --vault-name KV1 --vm VM1"
+    ],
+    "correctAnswers": ["az vm encryption enable --name VM1 --resource-group RG1 --disk-encryption-keyvault KV1"],
+    "explanation": "ADE is enabled with `az vm encryption enable` pointing at the Key Vault. --encryption-at-host is the different, host-level feature; the other two commands are invented.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-38",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "Which parameter creates a VM with host-level encryption covering temp disks and caches?",
+    "choices": [
+      "az vm create ... --encryption-at-host true",
+      "az vm create ... --disk-encryption-keyvault KV1",
+      "az vm create ... --confidential-disk true",
+      "az vm create ... --enable-tde true"
+    ],
+    "correctAnswers": ["az vm create ... --encryption-at-host true"],
+    "explanation": "--encryption-at-host enables the host-level layer (temp disks/caches, no agent). --disk-encryption-keyvault relates to ADE; TDE is a SQL feature; --confidential-disk isn't the real parameter.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-39",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "Which command creates an AKS cluster with Entra ID authentication, Azure RBAC authorization, and a private API server?",
+    "choices": [
+      "az aks create --name AKS1 --resource-group RG1 --enable-aad --enable-azure-rbac --enable-private-cluster",
+      "az aks create --name AKS1 --resource-group RG1 --auth entra --rbac k8s --no-public-api",
+      "az aks update --name AKS1 --kubeconfig-mode entra",
+      "az aks create --name AKS1 --resource-group RG1 --admin-account disabled"
+    ],
+    "correctAnswers": ["az aks create --name AKS1 --resource-group RG1 --enable-aad --enable-azure-rbac --enable-private-cluster"],
+    "explanation": "--enable-aad, --enable-azure-rbac and --enable-private-cluster are the real flags for these three configurations. The other parameter sets don't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-40",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "Which command disables ACR's shared admin account?",
+    "choices": [
+      "az acr update --name acr1 --admin-enabled false",
+      "az acr credential delete --name acr1 --admin",
+      "az acr config set --name acr1 --disable-admin",
+      "az acr identity remove --name acr1 --admin-account"
+    ],
+    "correctAnswers": ["az acr update --name acr1 --admin-enabled false"],
+    "explanation": "The admin account is a registry property toggled via `az acr update --admin-enabled false`. The other subcommands don't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-1-41",
+    "objectiveId": "o3-1",
+    "type": "single",
+    "prompt": "Which PowerShell cmdlet enables ADE on a VM?",
+    "choices": [
+      "Set-AzVMDiskEncryptionExtension",
+      "Set-AzDiskEncryption",
+      "Enable-AzVMEncryptionAtHost",
+      "New-AzDiskEncryptionSet"
+    ],
+    "correctAnswers": ["Set-AzVMDiskEncryptionExtension"],
+    "explanation": "ADE is deployed as a VM extension via Set-AzVMDiskEncryptionExtension. New-AzDiskEncryptionSet relates to customer-managed keys for managed disks (a different feature); the other two don't exist.",
+    "difficulty": "hard"
   }
 ]

@@ -508,5 +508,80 @@
     "correctAnswers": ["No"],
     "explanation": "UDRs are per-VNet and control outbound routing, not centralized inbound blocking — this still requires per-VNet configuration.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-37",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "NSG1 must be associated with Subnet1 of VNet1 — and with no other subnet. Which Azure CLI command is correct?",
+    "choices": [
+      "az network vnet subnet update --vnet-name VNet1 --name Subnet1 --resource-group RG1 --network-security-group NSG1",
+      "az network nsg update --name NSG1 --resource-group RG1 --subnet Subnet1",
+      "az network nsg subnet add --nsg-name NSG1 --subnet Subnet1 --vnet VNet1",
+      "az network vnet update --name VNet1 --resource-group RG1 --nsg NSG1 --subnet Subnet1"
+    ],
+    "correctAnswers": ["az network vnet subnet update --vnet-name VNet1 --name Subnet1 --resource-group RG1 --network-security-group NSG1"],
+    "explanation": "The association is a property of the SUBNET, so you update the subnet and point it at the NSG. There is no --subnet parameter on `az network nsg update`, and the other two subcommands don't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-38",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "Which PowerShell sequence associates an NSG with a specific subnet?",
+    "choices": [
+      "Set-AzVirtualNetworkSubnetConfig -VirtualNetwork $vnet -Name Subnet1 -AddressPrefix 10.0.1.0/24 -NetworkSecurityGroup $nsg ; $vnet | Set-AzVirtualNetwork",
+      "Set-AzNetworkSecurityGroup -Name NSG1 -Subnet Subnet1",
+      "Add-AzNetworkSecurityRuleConfig -NetworkSecurityGroup $nsg -Subnet Subnet1",
+      "New-AzNetworkSecurityGroup -Name NSG1 -SubnetName Subnet1"
+    ],
+    "correctAnswers": ["Set-AzVirtualNetworkSubnetConfig -VirtualNetwork $vnet -Name Subnet1 -AddressPrefix 10.0.1.0/24 -NetworkSecurityGroup $nsg ; $vnet | Set-AzVirtualNetwork"],
+    "explanation": "In PowerShell you modify the subnet config (Set-AzVirtualNetworkSubnetConfig) then persist the VNet. Set-AzNetworkSecurityGroup saves NSG rules, not subnet associations; Add-AzNetworkSecurityRuleConfig adds rules.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o2-1-39",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "Which command adds an inbound allow rule for TCP 443 at priority 100 to NSG1?",
+    "choices": [
+      "az network nsg rule create --nsg-name NSG1 --resource-group RG1 --name AllowHttps --priority 100 --direction Inbound --access Allow --protocol Tcp --destination-port-ranges 443",
+      "az network nsg create --name AllowHttps --priority 100 --port 443 --allow",
+      "az network vnet subnet update --name Subnet1 --allow-port 443",
+      "az network nsg rule add --nsg NSG1 --rule AllowHttps --port 443 --priority 100"
+    ],
+    "correctAnswers": ["az network nsg rule create --nsg-name NSG1 --resource-group RG1 --name AllowHttps --priority 100 --direction Inbound --access Allow --protocol Tcp --destination-port-ranges 443"],
+    "explanation": "Rules are managed with `az network nsg rule create` and its explicit parameters. `az network nsg create` creates the NSG itself; the other syntaxes don't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-40",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "Which command creates the default route that forces all egress from a subnet through a firewall at 10.0.0.4?",
+    "choices": [
+      "az network route-table route create --route-table-name RT1 --resource-group RG1 --name ToFw --address-prefix 0.0.0.0/0 --next-hop-type VirtualAppliance --next-hop-ip-address 10.0.0.4",
+      "az network route-table route create --route-table-name RT1 --resource-group RG1 --name ToFw --address-prefix 0.0.0.0/0 --next-hop-type Internet --next-hop-ip-address 10.0.0.4",
+      "az network vnet subnet update --name Subnet1 --default-route 10.0.0.4",
+      "az network firewall route add --firewall-name FW1 --address-prefix 0.0.0.0/0"
+    ],
+    "correctAnswers": ["az network route-table route create --route-table-name RT1 --resource-group RG1 --name ToFw --address-prefix 0.0.0.0/0 --next-hop-type VirtualAppliance --next-hop-ip-address 10.0.0.4"],
+    "explanation": "A forced tunnel is a route-table route with next-hop-type VirtualAppliance pointing at the firewall's private IP. Next-hop-type Internet would bypass the firewall; the other commands don't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o2-1-41",
+    "objectiveId": "o2-1",
+    "type": "single",
+    "prompt": "Which command tests whether an inbound packet to VM1 on port 443 would be allowed, and names the deciding NSG rule?",
+    "choices": [
+      "az network watcher test-ip-flow --vm VM1 --direction Inbound --protocol TCP --local 10.0.1.4:443 --remote 203.0.113.5:60000",
+      "az network watcher show-next-hop --vm VM1 --dest-ip 10.0.1.4",
+      "az network nsg rule list --nsg-name NSG1 --query \"[?destinationPortRange=='443']\"",
+      "az network watcher packet-capture create --vm VM1 --filters port=443"
+    ],
+    "correctAnswers": ["az network watcher test-ip-flow --vm VM1 --direction Inbound --protocol TCP --local 10.0.1.4:443 --remote 203.0.113.5:60000"],
+    "explanation": "IP flow verify (`test-ip-flow`) evaluates a 5-tuple against effective NSG rules and returns the rule that decides. Next hop answers routing, rule list only shows configuration, packet capture records traffic.",
+    "difficulty": "medium"
   }
 ]

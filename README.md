@@ -67,7 +67,11 @@ son navigateur.
 - **Domaines → objectifs** : navigation par les 4 domaines officiels
   (pondération Microsoft affichée), fiche de cours condensée par objectif
   (résumé, points clés, pièges fréquents, liens Microsoft Learn).
-- **Quiz ciblé** : ~36 questions par objectif (banque de 432 au total). Chaque
+- **Commandes clés** : chaque fiche inclut les commandes Azure CLI et
+  PowerShell testées à l'examen (ex. associer un NSG à un subnet précis,
+  activer un plan Defender, créer un private endpoint), et la banque contient
+  des questions dédiées à la syntaxe exacte des commandes.
+- **Quiz ciblé** : ~41 questions par objectif (banque de 492 au total). Chaque
   session tire un sous-ensemble au hasard (10, 20, ou tout), l'ordre des
   réponses est mélangé (stable pendant la session, différent à chaque passage),
   feedback immédiat avec explication, et mise à jour de la répétition espacée

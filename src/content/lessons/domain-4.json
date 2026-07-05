@@ -19,6 +19,33 @@
       "Ne pas confondre le **soft delete/purge protection de Key Vault** (protège les objets du coffre : secrets/clés/certs) avec le **soft delete/immutable vaults/MUA d'Azure Backup** (protège le contenu des Recovery Services/Backup vaults) — même vocabulaire, deux services différents dans ce même objectif.",
       "La sécurité de gestion des actifs consiste à **connaître et classer** ce que l'on a (inventaire + tagging), pas l'état de configuration de sécurité de ces actifs — ne pas confondre avec le **Secure Score** du CSPM (objectif o4-2)."
     ],
+    "commands": [
+      {
+        "task": "Assigner une policy intégrée à un scope",
+        "cli": "az policy assignment create --name RequireTag --policy <policyDefId> --scope /subscriptions/<subId>/resourceGroups/RG1",
+        "powershell": "New-AzPolicyAssignment -Name RequireTag -PolicyDefinition $def -Scope /subscriptions/<subId>/resourceGroups/RG1"
+      },
+      {
+        "task": "Créer un Key Vault en modèle RBAC, avec purge protection",
+        "cli": "az keyvault create --name KV1 --resource-group RG1 --enable-rbac-authorization true --enable-purge-protection true",
+        "powershell": "New-AzKeyVault -Name KV1 -ResourceGroupName RG1 -Location westeurope -EnableRbacAuthorization -EnablePurgeProtection"
+      },
+      {
+        "task": "Restreindre le réseau du Key Vault : refuser par défaut, autoriser un subnet",
+        "cli": "az keyvault update --name KV1 --resource-group RG1 --default-action Deny\naz keyvault network-rule add --name KV1 --resource-group RG1 --vnet-name VNet1 --subnet Subnet1",
+        "powershell": "Update-AzKeyVaultNetworkRuleSet -VaultName KV1 -DefaultAction Deny\nAdd-AzKeyVaultNetworkRule -VaultName KV1 -VirtualNetworkResourceId $subnetId"
+      },
+      {
+        "task": "Configurer la rotation automatique d'une clé",
+        "cli": "az keyvault key rotation-policy update --vault-name KV1 --name Key1 --value @rotation-policy.json",
+        "powershell": "Set-AzKeyVaultKeyRotationPolicy -VaultName KV1 -KeyName Key1 -ExpiresIn P90D -KeyRotationLifetimeAction $action"
+      },
+      {
+        "task": "Sauvegarder / restaurer un secret du coffre",
+        "cli": "az keyvault secret backup --vault-name KV1 --name Secret1 --file secret1.blob\naz keyvault secret restore --vault-name KV1 --file secret1.blob",
+        "powershell": "Backup-AzKeyVaultSecret -VaultName KV1 -Name Secret1 -OutputFile secret1.blob\nRestore-AzKeyVaultSecret -VaultName KV1 -InputFile secret1.blob"
+      }
+    ],
     "learnLinks": [
       "https://learn.microsoft.com/en-us/azure/governance/policy/overview",
       "https://learn.microsoft.com/en-us/azure/key-vault/general/access-control-default",
@@ -42,6 +69,18 @@
       "Le **CSPM** (cet objectif — fondation gratuite : Secure Score, recommandations, conformité) n'est pas le **CWP** (plans Defender payants, objectif o4-3 : alertes de détection de menaces). CSPM répond « sommes-nous bien configurés ? » ; CWP répond « sommes-nous attaqués maintenant ? ».",
       "Le **Microsoft Cloud Security Benchmark (MCSB)** est le standard appliqué **par défaut** — on **ajoute** des standards réglementaires (ISO, PCI-DSS, custom) par-dessus, on ne le remplace pas.",
       "L'**EASM** regarde l'environnement **de l'EXTÉRIEUR** (comme un attaquant internet) ; l'Inventory/Secure Score le regardent **de l'intérieur** (comme un administrateur authentifié) — ne pas confondre les deux directions de visibilité."
+    ],
+    "commands": [
+      {
+        "task": "Lister l'état des plans Defender (tier Free = CSPM seul, Standard = CWP)",
+        "cli": "az security pricing list",
+        "powershell": "Get-AzSecurityPricing"
+      },
+      {
+        "task": "Interroger l'inventaire à grande échelle via Azure Resource Graph",
+        "cli": "az graph query -q \"Resources | where type == 'microsoft.storage/storageaccounts' | project name, location\"",
+        "powershell": "Search-AzGraph -Query \"Resources | where type == 'microsoft.storage/storageaccounts' | project name, location\""
+      }
     ],
     "learnLinks": [
       "https://learn.microsoft.com/en-us/azure/defender-for-cloud/secure-score-security-controls",
@@ -67,6 +106,23 @@
       "Les **plans CWP** sont facturés et activés **par type de ressource/abonnement** — activer Defender for Servers **n'active pas** automatiquement Defender for Storage ou Databases ; chacun est un interrupteur séparé.",
       "La **DevOps Security** couvre l'étape **pré-déploiement / supply-chain** (code, secrets, mauvaises configs IaC dans les pipelines) — elle ne remplace **pas** les plans de protection à l'exécution comme Defender for Servers/Containers, qui surveillent la charge déployée."
     ],
+    "commands": [
+      {
+        "task": "Activer un plan Defender (CWP) sur l'abonnement — ex. Defender for Servers",
+        "cli": "az security pricing create --name VirtualMachines --tier Standard",
+        "powershell": "Set-AzSecurityPricing -Name VirtualMachines -PricingTier Standard"
+      },
+      {
+        "task": "Activer Defender for Storage",
+        "cli": "az security pricing create --name StorageAccounts --tier Standard",
+        "powershell": "Set-AzSecurityPricing -Name StorageAccounts -PricingTier Standard"
+      },
+      {
+        "task": "Vérifier le tier d'un plan précis",
+        "cli": "az security pricing show --name SqlServers",
+        "powershell": "Get-AzSecurityPricing -Name SqlServers"
+      }
+    ],
     "learnLinks": [
       "https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-servers-introduction",
       "https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-agentless-data-collection",
@@ -89,6 +145,23 @@
       "Toute réponse proposant d'installer/configurer le **« Log Analytics agent » / « Microsoft Monitoring Agent (MMA) »** pour une nouvelle collecte de télémétrie est **fausse** — le backend de cet agent a été **totalement arrêté en mars 2026** ; les **DCRs + l'Azure Monitor Agent** sont le seul chemin actuel. Source : https://learn.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-migration",
       "Ne pas supposer que **« Microsoft Sentinel »** désigne autre chose depuis son changement de portail — c'est le même produit SIEM/SOAR et le même Log Analytics workspace sous-jacent ; seule la surface d'opération (portail Defender vs Azure) a changé. Source : https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal",
       "La **workflow automation** (Defender for Cloud, déclenchée par alertes/recommandations) et les **automation rules/playbooks de Sentinel** (déclenchés par incidents) sont des systèmes d'automatisation parallèles mais séparés — les deux exécutent au final des Logic Apps, mais depuis des déclencheurs différents."
+    ],
+    "commands": [
+      {
+        "task": "Créer un workspace Log Analytics (socle de Sentinel)",
+        "cli": "az monitor log-analytics workspace create --workspace-name LAW1 --resource-group RG1",
+        "powershell": "New-AzOperationalInsightsWorkspace -Name LAW1 -ResourceGroupName RG1 -Location westeurope"
+      },
+      {
+        "task": "Créer une Data Collection Rule et l'associer à une VM (collecte via AMA)",
+        "cli": "az monitor data-collection rule create --name DCR1 --resource-group RG1 --rule-file dcr.json\naz monitor data-collection rule association create --name assoc1 --rule-id <dcrId> --resource <vmId>",
+        "powershell": "New-AzDataCollectionRule -Name DCR1 -ResourceGroupName RG1 -JsonFilePath dcr.json\nNew-AzDataCollectionRuleAssociation -AssociationName assoc1 -DataCollectionRuleId <dcrId> -ResourceUri <vmId>"
+      },
+      {
+        "task": "Onboarder Microsoft Sentinel sur le workspace",
+        "cli": "az sentinel onboarding-state create --name default --resource-group RG1 --workspace-name LAW1",
+        "powershell": "New-AzSentinelOnboardingState -Name default -ResourceGroupName RG1 -WorkspaceName LAW1"
+      }
     ],
     "learnLinks": [
       "https://learn.microsoft.com/en-us/azure/defender-for-cloud/workflow-automation",

@@ -492,5 +492,80 @@
     "correctAnswers": ["No"],
     "explanation": "MFA on sign-in doesn't address the requirement for no standing privileged access, approval, or a 4-hour limit — the Contributor grant remains permanent.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-37",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "Which Azure CLI command assigns the Reader role to user@contoso.com on resource group RG1 only?",
+    "choices": [
+      "az role assignment create --assignee user@contoso.com --role Reader --scope /subscriptions/<subId>/resourceGroups/RG1",
+      "az role definition create --assignee user@contoso.com --role Reader --resource-group RG1",
+      "az ad user update --id user@contoso.com --role Reader --scope RG1",
+      "az role assignment add --user user@contoso.com --role Reader --rg RG1"
+    ],
+    "correctAnswers": ["az role assignment create --assignee user@contoso.com --role Reader --scope /subscriptions/<subId>/resourceGroups/RG1"],
+    "explanation": "Role assignments use `az role assignment create` with --assignee, --role and --scope. `az role definition create` creates custom role definitions, not assignments; the other two subcommands don't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-38",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "Which PowerShell cmdlet assigns a built-in role to a user on a resource group?",
+    "choices": [
+      "New-AzRoleAssignment",
+      "New-AzRoleDefinition",
+      "Set-AzRoleAssignment",
+      "Add-AzADGroupMember"
+    ],
+    "correctAnswers": ["New-AzRoleAssignment"],
+    "explanation": "New-AzRoleAssignment creates the assignment. New-AzRoleDefinition creates a custom role definition; Set-AzRoleAssignment doesn't exist; Add-AzADGroupMember manages group membership.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-39",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "You authored customRole.json with Actions and AssignableScopes. Which command creates the custom role from it?",
+    "choices": [
+      "az role definition create --role-definition @customRole.json",
+      "az role assignment create --role-definition @customRole.json",
+      "az role definition add --file customRole.json",
+      "New-AzRoleAssignment -InputFile customRole.json"
+    ],
+    "correctAnswers": ["az role definition create --role-definition @customRole.json"],
+    "explanation": "Custom roles are created with `az role definition create` (PowerShell: New-AzRoleDefinition -InputFile). `az role assignment create` assigns existing roles; the other options don't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-40",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "Which command lists all role assignments on resource group RG1, including those inherited from the subscription?",
+    "choices": [
+      "az role assignment list --scope /subscriptions/<subId>/resourceGroups/RG1 --include-inherited",
+      "az role definition list --resource-group RG1 --all",
+      "az role assignment show --resource-group RG1 --recursive",
+      "Get-AzRoleDefinition -ResourceGroupName RG1"
+    ],
+    "correctAnswers": ["az role assignment list --scope /subscriptions/<subId>/resourceGroups/RG1 --include-inherited"],
+    "explanation": "`az role assignment list` with --include-inherited shows direct and inherited assignments. `role definition` commands list role definitions (what roles exist), not who holds them.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o1-1-41",
+    "objectiveId": "o1-1",
+    "type": "single",
+    "prompt": "In a custom role's JSON, which snippet grants read on everything while denying nothing at the data plane?",
+    "choices": [
+      "\"Actions\": [\"*/read\"], \"DataActions\": []",
+      "\"NotActions\": [\"*/read\"], \"DataActions\": [\"*\"]",
+      "\"Actions\": [], \"NotDataActions\": [\"*/read\"]",
+      "\"AssignableScopes\": [\"*/read\"]"
+    ],
+    "correctAnswers": ["\"Actions\": [\"*/read\"], \"DataActions\": []"],
+    "explanation": "*/read under Actions grants control-plane read everywhere; an empty DataActions grants nothing at the data plane. NotActions/NotDataActions subtract, and AssignableScopes takes scopes, not operations.",
+    "difficulty": "hard"
   }
 ]

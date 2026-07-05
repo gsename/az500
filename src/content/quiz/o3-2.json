@@ -535,5 +535,80 @@
     "correctAnswers": ["No"],
     "explanation": "This exposes the data to anyone, not just the partner, and isn't time-limited — it fails the scoped-access requirement.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-37",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "Which command forces all connections to a storage account to use HTTPS with at least TLS 1.2?",
+    "choices": [
+      "az storage account update --name stg1 --resource-group RG1 --https-only true --min-tls-version TLS1_2",
+      "az storage account update --name stg1 --resource-group RG1 --secure-transfer on --tls 1.2",
+      "az storage account tls set --name stg1 --minimum 1.2",
+      "az storage container update --name docs --https true"
+    ],
+    "correctAnswers": ["az storage account update --name stg1 --resource-group RG1 --https-only true --min-tls-version TLS1_2"],
+    "explanation": "--https-only and --min-tls-version (format TLS1_2) are the real parameters on `az storage account update`. The other syntaxes don't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o3-2-38",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "Which command blocks all shared-key authorization on a storage account, forcing Entra-based access?",
+    "choices": [
+      "az storage account update --name stg1 --resource-group RG1 --allow-shared-key-access false",
+      "az storage account keys delete --account-name stg1 --all",
+      "az storage account update --name stg1 --resource-group RG1 --default-action Deny",
+      "az storage account revoke-delegation-keys --name stg1"
+    ],
+    "correctAnswers": ["az storage account update --name stg1 --resource-group RG1 --allow-shared-key-access false"],
+    "explanation": "--allow-shared-key-access false disables key-based authorization. You can't delete account keys; --default-action Deny is a NETWORK control, not an authorization one; revoke-delegation-keys revokes user-delegation SAS.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o3-2-39",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "Which command generates a user-delegation SAS (signed with Entra credentials, not the account key) for one blob?",
+    "choices": [
+      "az storage blob generate-sas --account-name stg1 --container-name docs --name file.pdf --permissions r --expiry 2026-08-01 --auth-mode login --as-user",
+      "az storage blob generate-sas --account-name stg1 --container-name docs --name file.pdf --permissions r --account-key <key>",
+      "az storage account generate-sas --permissions r --services b",
+      "az storage blob sign --name file.pdf --entra"
+    ],
+    "correctAnswers": ["az storage blob generate-sas --account-name stg1 --container-name docs --name file.pdf --permissions r --expiry 2026-08-01 --auth-mode login --as-user"],
+    "explanation": "--auth-mode login --as-user produces the user-delegation SAS. Passing --account-key signs with the account key (account-key SAS); `az storage account generate-sas` is account-level; `blob sign` doesn't exist.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o3-2-40",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "Which pair of commands sets the storage firewall to deny by default, then allows only Subnet1 of VNet1?",
+    "choices": [
+      "az storage account update --default-action Deny ; az storage account network-rule add --vnet-name VNet1 --subnet Subnet1",
+      "az storage account update --public-network-access Disabled ; az storage account network-rule add --subnet Subnet1",
+      "az network nsg rule create --destination stg1 --source Subnet1",
+      "az storage firewall set --mode Deny --allow VNet1/Subnet1"
+    ],
+    "correctAnswers": ["az storage account update --default-action Deny ; az storage account network-rule add --vnet-name VNet1 --subnet Subnet1"],
+    "explanation": "Default-action Deny + network-rule add is the selected-networks pattern. public-network-access Disabled would shut the public endpoint entirely, making the subnet rule pointless; NSGs don't govern the storage service side.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o3-2-41",
+    "objectiveId": "o3-2",
+    "type": "single",
+    "prompt": "Which command enables blob soft delete with a 14-day retention?",
+    "choices": [
+      "az storage account blob-service-properties update --account-name stg1 --resource-group RG1 --enable-delete-retention true --delete-retention-days 14",
+      "az storage account update --name stg1 --soft-delete 14",
+      "az storage blob undelete-policy set --days 14",
+      "az storage container immutability-policy create --period 14"
+    ],
+    "correctAnswers": ["az storage account blob-service-properties update --account-name stg1 --resource-group RG1 --enable-delete-retention true --delete-retention-days 14"],
+    "explanation": "Blob soft delete is a blob-service property (--enable-delete-retention). The immutability-policy command configures WORM (a different feature); the other two don't exist.",
+    "difficulty": "medium"
   }
 ]

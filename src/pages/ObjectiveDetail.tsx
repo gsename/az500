@@ -71,6 +71,32 @@ export default function ObjectiveDetail() {
         ))}
       </ul>
 
+      {lesson.commands && lesson.commands.length > 0 && (
+        <>
+          <div className="section-title">
+            <span className="si">⌨️</span> Commandes clés
+          </div>
+          <p className="muted" style={{ marginTop: '-0.25rem' }}>
+            L'examen teste la syntaxe exacte — Azure CLI et PowerShell sont tous deux au programme.
+          </p>
+          {lesson.commands.map((cmd, i) => (
+            <div key={i} className="cmd-item">
+              <div className="cmd-task">{renderInline(cmd.task)}</div>
+              {cmd.cli && (
+                <code className="cmd-block" data-shell="az cli">
+                  {cmd.cli}
+                </code>
+              )}
+              {cmd.powershell && (
+                <code className="cmd-block" data-shell="pwsh">
+                  {cmd.powershell}
+                </code>
+              )}
+            </div>
+          ))}
+        </>
+      )}
+
       <div className="section-title">
         <span className="si">🎯</span> Compétences officielles (Microsoft Learn)
       </div>

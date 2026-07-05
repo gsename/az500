@@ -20,6 +20,28 @@
       "Choisir la couche de chiffrement de disque **selon le besoin**, pas « plus = mieux » : **ADE** pour du BitLocker/DM-Crypt in-guest, **encryption at host** quand disques temp/cache doivent être couverts sans agent, **confidential disk** quand la clé du disque OS doit être liée matériellement au TEE d'une VM confidentielle.",
       "Le mode **« interne »** d'APIM signifie **AUCUN endpoint public** — si un scénario exige à la fois accès public ET isolation réseau, la réponse est APIM en mode interne **derrière** App Gateway/Front Door, pas le mode externe seul."
     ],
+    "commands": [
+      {
+        "task": "Activer Azure Disk Encryption (ADE) sur une VM, clés dans Key Vault",
+        "cli": "az vm encryption enable --name VM1 --resource-group RG1 --disk-encryption-keyvault KV1",
+        "powershell": "Set-AzVMDiskEncryptionExtension -ResourceGroupName RG1 -VMName VM1 -DiskEncryptionKeyVaultUrl $kvUrl -DiskEncryptionKeyVaultId $kvId"
+      },
+      {
+        "task": "Créer une VM avec encryption at host (couvre disques temp/cache, sans agent)",
+        "cli": "az vm create --name VM1 --resource-group RG1 --image Ubuntu2204 --encryption-at-host true",
+        "powershell": "New-AzVm ... -EncryptionAtHost:$true"
+      },
+      {
+        "task": "Créer un cluster AKS privé avec Entra ID + Azure RBAC for Kubernetes",
+        "cli": "az aks create --name AKS1 --resource-group RG1 --enable-aad --enable-azure-rbac --enable-private-cluster",
+        "powershell": "New-AzAksCluster -Name AKS1 -ResourceGroupName RG1 -EnableAzureRbac -EnableAadProfile ..."
+      },
+      {
+        "task": "Désactiver le compte admin partagé d'ACR",
+        "cli": "az acr update --name acr1 --admin-enabled false",
+        "powershell": "Update-AzContainerRegistry -Name acr1 -ResourceGroupName RG1 -DisableAdminUser"
+      }
+    ],
     "learnLinks": [
       "https://learn.microsoft.com/en-us/azure/bastion/bastion-overview",
       "https://learn.microsoft.com/en-us/azure/aks/operator-best-practices-identity",
@@ -46,6 +68,33 @@
       "Les fonctions de récupération ne sont pas interchangeables : le **soft delete** annule une suppression accidentelle ; le **versioning** préserve l'historique des écrasements ; l'**immutable storage (WORM)** **empêche activement** modification/suppression, même par un admin autorisé, pendant la rétention — à choisir spécifiquement pour la conformité/legal-hold.",
       "**BYOK/clés gérées par le client** et **chiffrement d'infrastructure (double)** sont deux protections différentes et empilables — BYOK concerne **qui contrôle la clé**, le double chiffrement **combien de couches** indépendantes s'appliquent."
     ],
+    "commands": [
+      {
+        "task": "Forcer HTTPS et une version TLS minimale sur un compte de stockage",
+        "cli": "az storage account update --name stg1 --resource-group RG1 --https-only true --min-tls-version TLS1_2",
+        "powershell": "Set-AzStorageAccount -Name stg1 -ResourceGroupName RG1 -EnableHttpsTrafficOnly $true -MinimumTlsVersion TLS1_2"
+      },
+      {
+        "task": "Désactiver l'accès par clé partagée (forcer l'auth Entra)",
+        "cli": "az storage account update --name stg1 --resource-group RG1 --allow-shared-key-access false",
+        "powershell": "Set-AzStorageAccount -Name stg1 -ResourceGroupName RG1 -AllowSharedKeyAccess $false"
+      },
+      {
+        "task": "Restreindre le firewall du compte : refuser par défaut, autoriser un subnet",
+        "cli": "az storage account update --name stg1 --resource-group RG1 --default-action Deny\naz storage account network-rule add --account-name stg1 --resource-group RG1 --vnet-name VNet1 --subnet Subnet1",
+        "powershell": "Update-AzStorageAccountNetworkRuleSet -Name stg1 -ResourceGroupName RG1 -DefaultAction Deny\nAdd-AzStorageAccountNetworkRule -Name stg1 -ResourceGroupName RG1 -VirtualNetworkResourceId $subnetId"
+      },
+      {
+        "task": "Générer un user-delegation SAS (signé avec des credentials Entra, pas la clé de compte)",
+        "cli": "az storage blob generate-sas --account-name stg1 --container-name docs --name file.pdf --permissions r --expiry 2026-08-01 --auth-mode login --as-user",
+        "powershell": "New-AzStorageBlobSASToken -Container docs -Blob file.pdf -Permission r -ExpiryTime (Get-Date).AddHours(2) -Context $ctx  # $ctx créé avec -UseConnectedAccount"
+      },
+      {
+        "task": "Activer le soft delete des blobs (rétention 14 jours)",
+        "cli": "az storage account blob-service-properties update --account-name stg1 --resource-group RG1 --enable-delete-retention true --delete-retention-days 14",
+        "powershell": "Enable-AzStorageBlobDeleteRetentionPolicy -ResourceGroupName RG1 -StorageAccountName stg1 -RetentionDays 14"
+      }
+    ],
     "learnLinks": [
       "https://learn.microsoft.com/en-us/azure/storage/common/authorize-data-access",
       "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-active-directory-overview",
@@ -68,6 +117,28 @@
       "**TDE** (au repos, transparent, base entière) vs **Always Encrypted** (colonnes précises, bout en bout, caché des admins) vs **dynamic data masking** (résultats uniquement, aucune protection cryptographique réelle) — LA distinction la plus testée de cet objectif ; savoir exactement quelle menace chacun couvre.",
       "Le **dynamic data masking** n'arrête **PAS** un compte privilégié/admin et ne protège ni en transit ni au repos par lui-même — c'est un contrôle d'affichage pour les utilisateurs non privilégiés.",
       "Activer **« Support only Microsoft Entra authentication »** est un durcissement **à sens unique** qui désactive totalement les logins SQL — vérifier qu'aucune application n'en dépend avant de l'activer."
+    ],
+    "commands": [
+      {
+        "task": "Définir l'admin Microsoft Entra du serveur SQL",
+        "cli": "az sql server ad-admin create --server sql1 --resource-group RG1 --display-name \"SecAdmins\" --object-id <groupObjectId>",
+        "powershell": "Set-AzSqlServerActiveDirectoryAdministrator -ServerName sql1 -ResourceGroupName RG1 -DisplayName \"SecAdmins\""
+      },
+      {
+        "task": "Imposer l'authentification Entra uniquement (désactive les logins SQL)",
+        "cli": "az sql server ad-only-auth enable --name sql1 --resource-group RG1",
+        "powershell": "Enable-AzSqlServerActiveDirectoryOnlyAuthentication -ServerName sql1 -ResourceGroupName RG1"
+      },
+      {
+        "task": "Activer l'auditing de la base vers un workspace Log Analytics",
+        "cli": "az sql db audit-policy update --server sql1 --name db1 --resource-group RG1 --state Enabled --log-analytics-target-state Enabled --log-analytics-workspace-resource-id <workspaceId>",
+        "powershell": "Set-AzSqlDatabaseAudit -ServerName sql1 -DatabaseName db1 -ResourceGroupName RG1 -LogAnalyticsTargetState Enabled -WorkspaceResourceId <workspaceId>"
+      },
+      {
+        "task": "Vérifier / activer TDE sur une base",
+        "cli": "az sql db tde show --server sql1 --database db1 --resource-group RG1\naz sql db tde set --server sql1 --database db1 --resource-group RG1 --status Enabled",
+        "powershell": "Get-AzSqlDatabaseTransparentDataEncryption -ServerName sql1 -DatabaseName db1 -ResourceGroupName RG1\nSet-AzSqlDatabaseTransparentDataEncryption -ServerName sql1 -DatabaseName db1 -ResourceGroupName RG1 -State Enabled"
+      }
     ],
     "learnLinks": [
       "https://learn.microsoft.com/en-us/azure/azure-sql/database/authentication-aad-overview",

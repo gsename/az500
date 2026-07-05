@@ -526,5 +526,80 @@
     "correctAnswers": ["No"],
     "explanation": "DCRs configure telemetry collection into a workspace — they do not trigger actions in response to alerts.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-4-37",
+    "objectiveId": "o4-4",
+    "type": "single",
+    "prompt": "Which command creates the Log Analytics workspace that Sentinel will be onboarded onto?",
+    "choices": [
+      "az monitor log-analytics workspace create --workspace-name LAW1 --resource-group RG1",
+      "az sentinel workspace create --name LAW1 --resource-group RG1",
+      "az monitor workspace create --name LAW1 --type log-analytics",
+      "az log-analytics create --name LAW1"
+    ],
+    "correctAnswers": ["az monitor log-analytics workspace create --workspace-name LAW1 --resource-group RG1"],
+    "explanation": "The workspace lives under `az monitor log-analytics workspace`. `az monitor workspace` creates an Azure Monitor (Prometheus) workspace — a different resource; the other two don't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-4-38",
+    "objectiveId": "o4-4",
+    "type": "single",
+    "prompt": "After creating a Data Collection Rule, which command makes VM1 actually send telemetry according to that rule?",
+    "choices": [
+      "az monitor data-collection rule association create --name assoc1 --rule-id <dcrId> --resource <vmId>",
+      "az monitor data-collection rule update --name DCR1 --add-vm VM1",
+      "az vm extension set --name LogAnalyticsAgent --vm-name VM1",
+      "az monitor diagnostic-settings create --resource VM1 --rule DCR1"
+    ],
+    "correctAnswers": ["az monitor data-collection rule association create --name assoc1 --rule-id <dcrId> --resource <vmId>"],
+    "explanation": "A DCR takes effect through an ASSOCIATION between the rule and the resource. Installing the retired Log Analytics agent is wrong, and DCRs aren't referenced from diagnostic settings.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o4-4-39",
+    "objectiveId": "o4-4",
+    "type": "single",
+    "prompt": "Which command onboards Microsoft Sentinel onto workspace LAW1?",
+    "choices": [
+      "az sentinel onboarding-state create --name default --resource-group RG1 --workspace-name LAW1",
+      "az sentinel create --workspace LAW1",
+      "az monitor log-analytics workspace update --name LAW1 --enable-sentinel",
+      "az security sentinel enable --workspace LAW1"
+    ],
+    "correctAnswers": ["az sentinel onboarding-state create --name default --resource-group RG1 --workspace-name LAW1"],
+    "explanation": "Sentinel onboarding is expressed as an onboarding-state on the workspace (`az sentinel onboarding-state create -n default`). The other subcommands don't exist.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o4-4-40",
+    "objectiveId": "o4-4",
+    "type": "single",
+    "prompt": "Which PowerShell cmdlet creates a Data Collection Rule from a JSON definition?",
+    "choices": [
+      "New-AzDataCollectionRule -Name DCR1 -ResourceGroupName RG1 -JsonFilePath dcr.json",
+      "New-AzMonitorRule -Name DCR1 -File dcr.json",
+      "Set-AzDiagnosticSetting -Name DCR1 -Json dcr.json",
+      "New-AzSentinelDataConnector -Name DCR1 -Rule dcr.json"
+    ],
+    "correctAnswers": ["New-AzDataCollectionRule -Name DCR1 -ResourceGroupName RG1 -JsonFilePath dcr.json"],
+    "explanation": "New-AzDataCollectionRule creates the DCR. Diagnostic settings and Sentinel data connectors are different mechanisms; New-AzMonitorRule doesn't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-4-41",
+    "objectiveId": "o4-4",
+    "type": "single",
+    "prompt": "A proposal uses `az vm extension set` to install the Log Analytics (OMS) agent on new VMs for security-event collection. What is the correct 2026 approach instead?",
+    "choices": [
+      "Create a Data Collection Rule and associate it with the VMs (Azure Monitor Agent)",
+      "Keep the OMS agent but upgrade it to the latest version",
+      "Replace it with a Sentinel playbook that pulls the events",
+      "Use diagnostic settings on each VM's NIC"
+    ],
+    "correctAnswers": ["Create a Data Collection Rule and associate it with the VMs (Azure Monitor Agent)"],
+    "explanation": "The Log Analytics/OMS agent is retired (backend shut down in March 2026); DCR + AMA is the only supported collection path. Playbooks are for response, and NIC diagnostic settings don't collect guest security events.",
+    "difficulty": "medium"
   }
 ]

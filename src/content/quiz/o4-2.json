@@ -531,5 +531,80 @@
     "correctAnswers": ["No"],
     "explanation": "EASM measures the size of the external attack surface, not the quality of security configuration.",
     "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-2-37",
+    "objectiveId": "o4-2",
+    "type": "single",
+    "prompt": "Which command lists, for each resource type, whether the Defender plan is on the Free (CSPM only) or Standard (CWP) tier?",
+    "choices": [
+      "az security pricing list",
+      "az security score list",
+      "az defender plan list",
+      "az security assessment tiers"
+    ],
+    "correctAnswers": ["az security pricing list"],
+    "explanation": "Defender plan tiers are exposed as 'pricings' — `az security pricing list` / Get-AzSecurityPricing. The other subcommands don't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-2-38",
+    "objectiveId": "o4-2",
+    "type": "single",
+    "prompt": "Which command queries all storage accounts across subscriptions at scale, the way the Defender for Cloud inventory does?",
+    "choices": [
+      "az graph query -q \"Resources | where type == 'microsoft.storage/storageaccounts' | project name, location\"",
+      "az resource list --query \"type=='storage'\" --all-subscriptions",
+      "az storage account list --include-all-tenants",
+      "az security inventory list --type storage"
+    ],
+    "correctAnswers": ["az graph query -q \"Resources | where type == 'microsoft.storage/storageaccounts' | project name, location\""],
+    "explanation": "Azure Resource Graph (`az graph query`, KQL) is the at-scale query engine behind the inventory. `az resource list` is per-subscription and slower; the other two don't exist.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o4-2-39",
+    "objectiveId": "o4-2",
+    "type": "single",
+    "prompt": "Which PowerShell cmdlet runs an Azure Resource Graph KQL query?",
+    "choices": [
+      "Search-AzGraph",
+      "Invoke-AzResourceQuery",
+      "Get-AzResourceGraph",
+      "Query-AzInventory"
+    ],
+    "correctAnswers": ["Search-AzGraph"],
+    "explanation": "Search-AzGraph (module Az.ResourceGraph) executes KQL queries against Resource Graph. The other three don't exist.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "q-o4-2-40",
+    "objectiveId": "o4-2",
+    "type": "single",
+    "prompt": "In `az security pricing list` output, what does tier 'Free' mean for a resource type?",
+    "choices": [
+      "Only the free CSPM foundation applies — no CWP threat detection for that type",
+      "The paid plan is active but discounted",
+      "The resource type is excluded from Secure Score",
+      "Agentless scanning is enabled at no cost"
+    ],
+    "correctAnswers": ["Only the free CSPM foundation applies — no CWP threat detection for that type"],
+    "explanation": "Free = posture only (recommendations/Secure Score); Standard = the paid Defender (CWP) plan with threat detection. Secure Score coverage is independent of tier; agentless scanning requires the paid Servers plan.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "q-o4-2-41",
+    "objectiveId": "o4-2",
+    "type": "single",
+    "prompt": "Where in the CLI/portal flow are AWS and GCP environments connected to Defender for Cloud?",
+    "choices": [
+      "Environment settings ▸ Add environment (security connectors)",
+      "az security pricing create --name AWS --tier Standard",
+      "Azure Arc ▸ Servers ▸ Add",
+      "az graph query with the AWS provider"
+    ],
+    "correctAnswers": ["Environment settings ▸ Add environment (security connectors)"],
+    "explanation": "Multicloud onboarding creates a security connector under Environment settings. `security pricing` sets plan tiers (there is no 'AWS' pricing name); Arc onboards individual machines, not cloud accounts.",
+    "difficulty": "medium"
   }
 ]

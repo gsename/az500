@@ -72,17 +72,22 @@ await shot('04b-objective-dark')
 await page.click('.theme-toggle')
 await page.waitForTimeout(200)
 
-// 5. Targeted quiz flow — run ALL 36 questions of o1-1 to deterministically
-// exercise every question type (single/multiple/case-study/solution-goal
-// via choice click, reorder via drag, active-screen via field interaction).
-await page.goto(`${BASE}/#/objectives/o1-1/quiz?n=36`, { waitUntil: 'networkidle' })
+// 5. Targeted quiz flow — run ALL questions of o1-1 (n=99 clamps to the full
+// pool) to deterministically exercise every question type (single/multiple/
+// case-study/solution-goal via choice click, reorder via drag, active-screen
+// via field interaction).
+await page.goto(`${BASE}/#/objectives/o1-1/quiz?n=99`, { waitUntil: 'networkidle' })
 await page.waitForSelector('.card', { timeout: 10000 })
+
+const totalText = await page.locator('.chip', { hasText: 'Question 1 /' }).first().textContent()
+const totalQuizQuestions = Number(totalText?.match(/\/\s*(\d+)/)?.[1] ?? 0)
+if (totalQuizQuestions < 37) fail('Quiz pool size', `expected 41 questions for o1-1, header says ${totalQuizQuestions}`)
 
 let sawReorder = false
 let sawActiveScreen = false
 let reorderChanged = false
 
-for (let i = 0; i < 36; i++) {
+for (let i = 0; i < totalQuizQuestions; i++) {
   await page.waitForSelector('.card', { timeout: 10000 })
   const isReorder = (await page.locator('text=Glisser-déposer pour ordonner').count()) > 0
   const isActiveScreen = (await page.locator('text=Active screen').count()) > 0
@@ -135,13 +140,13 @@ for (let i = 0; i < 36; i++) {
 await page.waitForSelector('text=Résultat', { timeout: 10000 })
 await shot('05-quiz-result')
 
-if (!sawReorder) fail('Quiz reorder type', 'no reorder question encountered across all 36 questions')
+if (!sawReorder) fail('Quiz reorder type', 'no reorder question encountered across the full pool')
 else ok('Quiz flow: encountered and answered reorder question(s)')
 if (!reorderChanged) fail('Quiz reorder drag', 'dragging did not change item order')
 else ok('Quiz flow: drag-and-drop reordering changed item order')
-if (!sawActiveScreen) fail('Quiz active-screen type', 'no active-screen question encountered across all 36 questions')
+if (!sawActiveScreen) fail('Quiz active-screen type', 'no active-screen question encountered across the full pool')
 else ok('Quiz flow: encountered and answered active-screen question(s)')
-ok('Quiz flow: completed all 36 questions (single/multiple/case-study/solution-goal/reorder/active-screen)')
+ok(`Quiz flow: completed all ${totalQuizQuestions} questions (all six question types)`)
 
 // 6. Mock exam flow
 await page.goto(`${BASE}/#/exam`, { waitUntil: 'networkidle' })
@@ -176,6 +181,22 @@ for (let i = 0; i < qnavCount && !lockTested; i++) {
   }
 }
 if (!lockTested) console.log('NOTE: no solution-goal question found in this exam draw (random) — lock behavior not exercised this run')
+
+// 6c. Reorder-in-exam: find a reorder question via qnav and verify its items
+// actually render (regression check: the exam must seed the initial order).
+let examReorderFound = false
+for (let i = 0; i < qnavCount && !examReorderFound; i++) {
+  const pill = qnavButtons.nth(i)
+  if (await pill.isDisabled()) continue
+  await pill.click()
+  if ((await page.locator('text=Glisser-déposer pour ordonner').count()) > 0) {
+    examReorderFound = true
+    const itemCount = await page.locator('.choice').count()
+    if (itemCount < 3) fail('Exam reorder render', `reorder question shows only ${itemCount} draggable items`)
+    else ok(`Exam reorder question renders its ${itemCount} draggable items`)
+  }
+}
+if (!examReorderFound) console.log('NOTE: no reorder question in this exam draw (random) — exam reorder rendering not exercised this run')
 
 await page.click('button:has-text("Terminer l\'examen")')
 await page.waitForSelector("text=Résultat de l'examen blanc", { timeout: 15000 })
